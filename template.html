@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html $if(lang)$lang="$lang$"$endif$>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>$title$$if(subtitle)$ - $subtitle$$endif$</title>
+    $for(author)$<meta name="author" content="$author$" />$endfor$
+    $if(date)$<meta name="date" content="$date$" />$endif$
+    $header-includes$
+
+    <!-- inject:css -->
+    <!-- endinject -->
+    </head>
+<body>
+<div id="frame">
+    <header>
+        $include-before$
+        <h1 id="title">$title$</h1>
+        $if(subtitle)$<h1 id="subtitle">$subtitle$</h1>$endif$
+    </header>
+    $if(toc)$<a id="TOC"></a>
+    <nav class="vertical fixed">
+    	$toc$
+    </nav>$endif$
+    <div id="page">
+        <div id="preface">
+            $for(association)$<div class="item association">
+                <span class="label">$association.type$</span>
+                <span class="text">$association.text$</span>
+            </div>$endfor$
+            $for(creator)$<div class="item creator">
+                $if(creator.role)$<span class="label">$creator.role$</span>$endif$
+                <span class="text">$creator.name$$if(creator.email)$
+                <a href="mailto:$creator.email$">$creator.email$</a>$endif$
+                </span>
+                $if(creator.affiliation)$
+                <span class="affiliation">$creator.affiliation$</span>
+                $endif$
+            </div>$endfor$
+            $if(date)$<div class="item date">
+                <span class="label">Datum</span>
+                <span class="text">$date$</span>
+            </div>$endif$
+            $if(version)$<div class="item version">
+                <span class="label">Version</span>
+                <span class="text">$version$</span>
+            </div>$endif$
+        </div>
+    	$body$
+    </div>
+    $if(include-after)$<footer>
+        $include-after$
+    </footer>$endif$
+</div>
+</body>
+</html>
