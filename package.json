@@ -1,16 +1,18 @@
 {
   "name": "mdproc",
   "version": "0.1.0",
-  "description": "Extended Markdown processing based on pandoc.",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "Extended Markdown processing based on pandoc, graphviz and others.",
+  "readme": "README.md",
   "keywords": [
     "markdown",
     "pandoc",
     "documentation"
   ],
   "author": "Tobias Kiertscher <dev@mastersign.de>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "https://github.com/mastersign/mdproc.git",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
