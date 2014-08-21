@@ -18,6 +18,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "gulp-spawn": "^0.3.0",
+    "merge-stream": "^0.1.5",
+    "mdgraphextract": "mastersign/mdgraphextract",
+    "htinliner": "mastersign/htinliner"
+  },
   "devDependencies": {
     "gulp": "^3.8.7",
     "gulp-minify-css": "^0.3.7",
