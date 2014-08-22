@@ -2,6 +2,21 @@ var inliner = require('htinliner');
 var ge = require('mdgraphextract');
 var spawn = require('gulp-spawn');
 
+var buildHtml = function(src, dest, opt) {
+	return function() {
+		return src
+			.pipe(spawn({
+				cmd: 'pandoc',
+				args: [],
+				filename: function(base, ext) { return base + '.html' }
+			}))
+			.pipe(inliner())
+			.pipe(dest);
+	};
+};
+
+module.exports.buildHtmlTask = buildHtml;
+
 var extractGraph = function(src, dest, opt) {
 	return function() {
 		return src
