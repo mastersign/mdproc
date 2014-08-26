@@ -1,20 +1,21 @@
 .border-radius(@radius) {
   -webkit-border-radius: @radius;
-     -moz-border-radius: @radius;
-          border-radius: @radius;
+	 -moz-border-radius: @radius;
+		  border-radius: @radius;
 }
 
 @statesForeground: #FFF;
 @statesDefault: #666;
-@statesOpen: #04D;
-@statesInProgress: #8FD;
-@statesClosed: #0D4;
+@statesOpen: #F80;
+@statesInProgress: #06D;
+@statesClosed: #4C0;
 
 .state {
 	background-color: @statesDefault;
 	font-weight: bold;
+	font-size: 0.8em;
 	color: @statesForeground;
-	.border-radius(4px);
+	padding: 0.1em 0.75em 0.2em 0.75em;
 }
 
 .state.open {
@@ -35,5 +36,100 @@
 	svg {
 		width: 100%;
 		height: auto;
+	}
+}
+
+header {
+	h1#title {
+		font-size: 3.0em;
+		margin-top: 0.25em;
+		font-weight: 200;
+	}
+
+	h1#subtitle {
+		margin-top: 0.5em;
+		font-size: 1.6em;
+	}
+}
+
+nav.vertical li {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	@media screen and (max-width: 720px), screen and (max-device-height: 720px) and (orientation: landscape) {
+		overflow: auto;
+		white-space: normal;
+	}
+}
+
+h1, h2, h3, h4 {
+	font-family: "Segoe UI", "Helvetica", sans-serif;
+	font-weight: 300;
+	line-height: 1.5em;
+}
+
+abbr, address, article, aside, audio, b, blockquote, 
+body, canvas, caption, cite, code, dd, del, details, 
+dfn, div, dl, dt, em, fieldset, figcaption, figure, footer, 
+form, h5, h6, header, hgroup, html, i, iframe, img, ins, 
+kbd, label, legend, li, mark, menu, nav, object, ol, 
+p, pre, q, samp, section, small, span, strong, sub, 
+summary, sup, table, tbody, td, tfoot, th, thead, time, 
+tr, ul, var, video {
+	font-family: "Segoe UI", "Helvetica", sans-serif;
+	font-weight: 500;
+	line-height: 1.5em;
+}
+
+a {
+	color: #46C;
+}
+a:visited {
+	color: #458;
+}
+a:hover {
+	color: #084;
+}
+
+strong, b {
+	font-weight: 700;
+}
+
+code {
+	border: none;
+	border-radius: 0;
+	background-color: #F0F0F0;
+	font-family: Consolas, "Courier New", monospace;
+	display: inline-block;
+	padding: 0.075em 0.3em;
+}
+
+#preface {
+	.item {
+	   margin: 0.5em 0;
+
+	   .label {
+			font-weight: 500;
+			display: block;
+			float: left;
+			width: 6em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.text {
+			display: block;
+			margin-left: 7em;
+			font-weight: 200;
+		}
+
+		.affiliation {
+			display: block;
+			margin-left: 7em;
+			clear: both;
+			font-style: italic;
+			color: #888;
+		}
 	}
 }
