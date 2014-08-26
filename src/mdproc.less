@@ -1,0 +1,39 @@
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+@statesForeground: #FFF;
+@statesDefault: #666;
+@statesOpen: #04D;
+@statesInProgress: #8FD;
+@statesClosed: #0D4;
+
+.state {
+	background-color: @statesDefault;
+	font-weight: bold;
+	color: @statesForeground;
+	.border-radius(4px);
+}
+
+.state.open {
+	background-color: @statesOpen;
+}
+
+.state.in-progress {
+	background-color: @statesInProgress;
+}
+
+.state.closed {
+	background-color: @statesClosed;
+}
+
+.htinliner {
+	display: block;
+
+	svg {
+		width: 100%;
+		height: auto;
+	}
+}

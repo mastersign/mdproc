@@ -1,7 +1,10 @@
+var path = require('path');
 var gulp = require('gulp');
+var merge = require('merge-stream');
 var rename = require('gulp-rename');
 var rimraf = require('gulp-rimraf');
 var minifyCss = require('gulp-minify-css');
+var less = require('gulp-less');
 var htinliner = require('htinliner');
 
 var bowerDir = './bower_components/';
@@ -18,9 +21,14 @@ gulp.task('copy_template', function() {
 });
 
 gulp.task('minify_styles', function() {
-	return gulp.src(bowerDir + 'h5smpl/css/*.css')
-		.pipe(minifyCss())
-		.pipe(gulp.dest(tempDir + 'css/'));
+	return merge(
+		gulp.src(path.join(bowerDir, 'h5smpl/css', '*.css'))
+			.pipe(minifyCss())
+			.pipe(gulp.dest(path.join(tempDir, 'css/'))),
+		gulp.src('./src/*.less')
+			.pipe(less())
+			.pipe(minifyCss())
+			.pipe(gulp.dest(path.join(tempDir, 'css/'))));
 });
 
 gulp.task('build_html_template', 

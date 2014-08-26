@@ -13,8 +13,7 @@
 		},
 		{
 			"name": "Code",
-			"path": "./src",
-			"file_include_patterns": ["*.js", "*.html"]
+			"path": "./src"
 		},
 		{
 			"name": "Tests",

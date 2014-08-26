@@ -2,3 +2,4 @@
 /bower_components
 /tmp
 *.sublime-workspace
+/tests/tmp

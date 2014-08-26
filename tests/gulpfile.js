@@ -11,4 +11,15 @@ gulp.task('autograph', mdproc.extractGraphTask(
 	gulp.dest('./tmp/'), 
 	{ autographLevel: 2 }));
 
-gulp.task('default', ['autograph', 'dotex']);
+gulp.task('md2html',
+	mdproc.buildHtmlTask(
+		gulp.src('./data/*.md'),
+		gulp.dest('./tmp/'),
+		{  }));
+
+gulp.task('inlinesvg', ['dotex', 'autograph', 'md2html'], 
+	mdproc.inlineSvgTask(
+		gulp.src('./tmp/*.html'),
+		gulp.dest('./tmp/')));
+
+gulp.task('default', ['inlinesvg']);
