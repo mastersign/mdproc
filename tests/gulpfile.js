@@ -2,24 +2,19 @@ var gulp = require('gulp');
 var mdproc = require('../src/index');
 
 gulp.task('dotex', mdproc.extractGraphTask(
-	gulp.src(['./data/*.md', '!./data/ui.md']), 
-	gulp.dest('./tmp/'), 
+	['./data/architecture.md', './data/backlog.md'], 
+	'./tmp/', 
 	{ mode: 'dotex' }));
 
 gulp.task('autograph', mdproc.extractGraphTask(
-	gulp.src('./data/ui.md'), 
-	gulp.dest('./tmp/'), 
+	'./data/ui.md', 
+	'./tmp/', 
 	{ autographLevel: 2 }));
 
-gulp.task('md2html',
+gulp.task('md2html', ['dotex', 'autograph'],
 	mdproc.buildHtmlTask(
-		gulp.src('./data/*.md'),
-		gulp.dest('./tmp/'),
+		'./data/*.md',
+		'./tmp/',
 		{  }));
 
-gulp.task('inlinesvg', ['dotex', 'autograph', 'md2html'], 
-	mdproc.inlineSvgTask(
-		gulp.src('./tmp/*.html'),
-		gulp.dest('./tmp/')));
-
-gulp.task('default', ['inlinesvg']);
+gulp.task('default', ['md2html']);

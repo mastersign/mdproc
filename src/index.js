@@ -1,7 +1,9 @@
 var path = require('path');
-var inliner = require('htinliner');
-var ge = require('mdgraphextract');
+var gulp = require('gulp');
 var spawn = require('gulp-spawn');
+
+var ge = require('mdgraphextract');
+var inliner = require('htinliner');
 
 var processStates = require('./states');
 
@@ -23,7 +25,7 @@ var templatePath = path.join(path.dirname(module.filename), '../assets/template.
 
 var buildHtml = function(src, dest, opt) {
 	return function() {
-		return src
+		return gulp.src(src)
 			.pipe(processStates())
 			.pipe(spawn({
 				cmd: 'pandoc',
@@ -40,37 +42,26 @@ var buildHtml = function(src, dest, opt) {
 				],
 				filename: function(base, ext) { return base + '.html' }
 			}))
-			.pipe(dest);
+			.pipe(inliner({ 
+				svgRemoveSize: true, 
+				svgWrapElement: 'div',
+				basePath: dest 
+			}))
+			.pipe(gulp.dest(dest));
 	};
 };
 module.exports.buildHtmlTask = buildHtml;
 
-var inlineSvg = function(src, dest) {
-	return function() {
-		src
-			.pipe(inliner({ svgRemoveSize: true, svgWrapElement: 'div' }))
-			.pipe(dest);
-	};
-};
-module.exports.inlineSvgTask = inlineSvg;
-
 var extractGraph = function(src, dest, opt) {
 	return function() {
-		return src
+		return gulp.src(src)
 			.pipe(ge(opt))
 			.pipe(spawn({
 				cmd: 'dot',
 				args: ['-Tsvg', '-Nfontname=Helvetica'],
 				filename: function(base, ext) { return base + '.svg' }
 			}))
-			.pipe(dest);
+			.pipe(gulp.dest(dest));
 	};
 };
 module.exports.extractGraphTask = extractGraph;
-
-/*
-
-md -> dot -> svg
-md -> html -> svgembedded
-
-*/
