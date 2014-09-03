@@ -84,6 +84,8 @@ var buildPdf = function(src, dest, opt) {
 		'--default-image-extension=' + imgFormat,
 		'--normalize',
 		'--smart',
+		'--toc',
+		'--toc-depth=2',
 		'--template="' + latexTemplatePath + '"',
 		'--variable=documentclass:scrartcl',
 		'--variable=lang:<%= file.pdfLang %>',
