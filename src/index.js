@@ -49,7 +49,7 @@ var buildHtml = function(src, dest, opt) {
 					'--toc',
 					'--toc-depth=2',
 					'--mathml',
-					'--template="' + html5TemplatePath + '"'
+					'--template', html5TemplatePath
 				],
 				filename: function(base, ext) { return base + '.html' }
 			}))
