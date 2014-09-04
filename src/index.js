@@ -8,6 +8,7 @@ var ge = require('mdgraphextract');
 var inliner = require('htinliner');
 
 var processStates = require('./states');
+var processReferences = require('./refs');
 var pdfLang = require('./pdflang');
 
 var inputFormat = [
@@ -31,13 +32,15 @@ var texInputsPath = path.join(path.dirname(module.filename), '../assets');
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
 var buildHtml = function(src, dest, opt) {
-	var imgFormat, imgBasePath;
+	var imgFormat, imgBasePath, templatePath;
 	opt = opt || {};
 	imgFormat = opt.imgFormat || 'svg';
 	imgBasePath = opt.imgBasePath || dest;
+	templatePath = opt.template || html5TemplatePath;
 	return function() {
 		return gulp.src(src)
 			.pipe(processStates())
+			.pipe(processReferences({ prefixCaption: true, figureTerm: 'Abbildung' }))
 			.pipe(spawn({
 				cmd: 'pandoc',
 				args: [
@@ -49,7 +52,7 @@ var buildHtml = function(src, dest, opt) {
 					'--toc',
 					'--toc-depth=2',
 					'--mathml',
-					'--template', html5TemplatePath
+					'--template', templatePath
 				],
 				filename: function(base, ext) { return base + '.html' }
 			}))
@@ -63,17 +66,21 @@ var buildHtml = function(src, dest, opt) {
 };
 module.exports.buildHtmlTask = buildHtml;
 
-
 var buildPdf = function(src, dest, opt) {
 	var execOptions, cmdline;
-	var imgFormat, imgBasePath;
+	var imgFormat, imgBasePath, templatePath, variables, key;
+	
 	opt = opt || {};
 	imgFormat = opt.imgFormat || 'png';
 	imgBasePath = opt.imgBasePath || dest;
+	templatePath = opt.template || latexTemplatePath;
+	variables = opt.vars || {};
+
 	execOptions = {
 		continueOnError: true,
 		pipeStdout: false
 	};
+
 	cmdline = [
 		'cd',
 		'"' + imgBasePath + '"',
@@ -86,16 +93,22 @@ var buildPdf = function(src, dest, opt) {
 		'--smart',
 		'--toc',
 		'--toc-depth=2',
-		'--template="' + latexTemplatePath + '"',
-		'--variable=documentclass:scrartcl',
-		'--variable=lang:<%= file.pdfLang %>',
+		'--template="' + templatePath + '"',
 		'--latex-engine=xelatex',
-		'-o', '"<%= file.path %>.pdf"',
-		'"<%= file.path %>.tmp"'
+		'--variable=documentclass:scrartcl',
+		'--variable=lang:<%= file.pdfLang %>'
 	];
+	for (key in variables) {
+		cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
+	}
+	cmdline.push('-o');
+	cmdline.push('"<%= file.path %>.pdf"');
+	cmdline.push('"<%= file.path %>.tmp"');
+
 	return function() {
 		return gulp.src(src)
 			.pipe(processStates())
+			.pipe(processReferences({ prefixCaption: false, figureTerm: 'Abbildung' }))
 			.pipe(rename({ extname: '.tmp' }))
 			.pipe(gulp.dest(dest))
 			.pipe(rename({ extname: '' }))
@@ -132,6 +145,7 @@ var buildDocx = function(src, dest, opt) {
 	return function() {
 		return gulp.src(src)
 			.pipe(processStates())
+			.pipe(processReferences({ prefixCaption: true, figureTerm: 'Abbildung' }))
 			.pipe(rename({ extname: '.tmp' }))
 			.pipe(gulp.dest(dest))
 			.pipe(rename({ extname: '' }))
