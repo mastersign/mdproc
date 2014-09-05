@@ -66,100 +66,115 @@ var buildHtml = function(src, dest, opt) {
 };
 module.exports.buildHtmlTask = buildHtml;
 
-var buildPdf = function(src, dest, opt) {
-	var execOptions, cmdline;
-	var imgFormat, imgBasePath, templatePath, variables, key;
-	
-	opt = opt || {};
-	imgFormat = opt.imgFormat || 'png';
-	imgBasePath = opt.imgBasePath || dest;
-	templatePath = opt.template || latexTemplatePath;
-	variables = opt.vars || {};
+var buildFactory = function(targetFormat, targetExt, 
+	defImgFormat, defTemplate, defTocDepth, prefixCaption,
+	args, transforms) {
 
-	execOptions = {
-		continueOnError: true,
-		pipeStdout: false
+	return function(src, dest, opt) {
+		var execOptions, cmdline;
+		var imgFormat, imgBasePath, templatePath, tocDepth, variables, key;
+		var tmpExt = targetExt + '_tmp';
+		var contextArgs, contextTransforms;
+		var i;
+
+		opt = opt || {};
+		imgFormat = opt.imgFormat || defImgFormat;
+		templatePath = opt.template || defTemplate;
+		tocDepth = opt.tocDepth || defTocDepth;
+		variables = opt.vars || {};
+		imgBasePath = opt.imgBasePath || dest;
+
+		var contextify = function(value) {
+			console.log('contextify?');
+			if (typeof(value) === 'function') {
+				console.log('yes');
+				return value(src, dest, opt);
+			}
+			return value;
+		};
+		contextArgs = contextify(args);
+		contextTransforms = contextify(transforms);
+
+		execOptions = {
+			continueOnError: true,
+			pipeStdout: false
+		};
+
+		cmdline = [
+			'cd',
+			'"' + imgBasePath + '"',
+			'&&',
+			'pandoc',
+			'--from=' + inputFormat.join('+'),
+			'--to=' + targetFormat,
+			'--default-image-extension=' + imgFormat,
+			'--normalize',
+			'--smart',
+			'--toc',
+			'--toc-depth=2'
+		];
+
+		if (templatePath) {
+			cmdline.push('--template="' + templatePath + '"');
+		}
+		if (contextArgs) {
+			for (i = 0; i < contextArgs.length; i++) {
+				cmdline.push(contextArgs[i]);
+			}
+		}
+
+		for (key in variables) {
+			cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
+		}
+
+		cmdline.push('-o');
+		cmdline.push('"<%= file.path %>.' + targetExt + '"');
+		cmdline.push('"<%= file.path %>.' + tmpExt + '"');
+
+		return function() {
+			var s = gulp.src(src);
+
+			s = s.pipe(processStates());
+			s = s.pipe(processReferences({ prefixCaption: prefixCaption, figureTerm: 'Abbildung' }));
+			
+			s = s
+				.pipe(rename({ extname: '.' + tmpExt }))
+				.pipe(gulp.dest(dest))
+				.pipe(rename({ extname: '' }));
+
+			if (contextTransforms) {
+				for (i = 0; i < contextTransforms.length; i++) {
+					s = s.pipe(contextTransforms[i]);
+				}
+			}
+
+			s = s
+				.pipe(exec(cmdline.join(' '), execOptions))
+				.pipe(exec.reporter());
+
+			return s;
+		};
 	};
+};
 
-	cmdline = [
-		'cd',
-		'"' + imgBasePath + '"',
-		'&&',
-		'pandoc',
-		'--from=' + inputFormat.join('+'),
-		'--to=latex',
-		'--default-image-extension=' + imgFormat,
-		'--normalize',
-		'--smart',
-		'--toc',
-		'--toc-depth=2',
-		'--template="' + templatePath + '"',
+module.exports.buildPdfTask = buildFactory(
+	'latex', 'pdf', 'pdf', latexTemplatePath, 2, false, 
+	[
 		'--latex-engine=xelatex',
 		'--variable=documentclass:scrartcl',
 		'--variable=lang:<%= file.pdfLang %>'
-	];
-	for (key in variables) {
-		cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
-	}
-	cmdline.push('-o');
-	cmdline.push('"<%= file.path %>.pdf"');
-	cmdline.push('"<%= file.path %>.tmp"');
+	], 
+	[ pdfLang() ]);
 
-	return function() {
-		return gulp.src(src)
-			.pipe(processStates())
-			.pipe(processReferences({ prefixCaption: false, figureTerm: 'Abbildung' }))
-			.pipe(rename({ extname: '.tmp' }))
-			.pipe(gulp.dest(dest))
-			.pipe(rename({ extname: '' }))
-			.pipe(pdfLang())
-			.pipe(exec(cmdline.join(' '), execOptions))
-			.pipe(exec.reporter());
-	};
-};
-module.exports.buildPdfTask = buildPdf;
-
-var buildDocx = function(src, dest, opt) {
-	var execOptions, cmdline;
-	var imgFormat, imgBasePath;
-	opt = opt || {};
-	imgFormat = opt.imgFormat || 'png';
-	imgBasePath = opt.imgBasePath || dest;
-	execOptions = {
-		continueOnError: true,
-		pipeStdout: false
-	};
-	cmdline = [
-		'cd',
-		'"' + imgBasePath + '"',
-		'&&',
-		'pandoc',
-		'--from=' + inputFormat.join('+'),
-		'--to=docx',
-		'--default-image-extension=' + imgFormat,
-		'--normalize',
-		'--smart',
-		'-o', '"<%= file.path %>.docx"',
-		'"<%= file.path %>.tmp"'
-	];
-	return function() {
-		return gulp.src(src)
-			.pipe(processStates())
-			.pipe(processReferences({ prefixCaption: true, figureTerm: 'Abbildung' }))
-			.pipe(rename({ extname: '.tmp' }))
-			.pipe(gulp.dest(dest))
-			.pipe(rename({ extname: '' }))
-			.pipe(exec(cmdline.join(' '), execOptions))
-			.pipe(exec.reporter());
-	};
-};
-module.exports.buildDocxTask = buildDocx;
+module.exports.buildDocxTask = buildFactory(
+	'docx', 'docx', 'png', null, 2, true)
 
 var extractGraph = function(src, dest, opt) {
-	var imgFormat, attributes, a;
+	var imgFormat, mode, attributes, a;
 	var args = [];
 	opt = opt || {};
 	imgFormat = opt.imgFormat || 'svg';
+	mode = opt.mode || 'auto';
 
 	args.push('-T' + imgFormat);
 
@@ -182,7 +197,7 @@ var extractGraph = function(src, dest, opt) {
 			.pipe(spawn({
 				cmd: 'dot',
 				args: args,
-				filename: function(base, ext) { return base + '.' + imgFormat }
+				filename: function(base, ext) { return base + '_' + mode + '.' + imgFormat }
 			}))
 			.pipe(gulp.dest(dest));
 	};
