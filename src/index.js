@@ -85,9 +85,7 @@ var buildFactory = function(targetFormat, targetExt,
 		imgBasePath = opt.imgBasePath || dest;
 
 		var contextify = function(value) {
-			console.log('contextify?');
 			if (typeof(value) === 'function') {
-				console.log('yes');
 				return value(src, dest, opt);
 			}
 			return value;
