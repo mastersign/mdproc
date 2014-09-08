@@ -80,7 +80,7 @@ var buildFactory = function(targetFormat, targetExt,
 		opt = opt || {};
 		imgFormat = opt.imgFormat || defImgFormat;
 		templatePath = opt.template || defTemplate;
-		tocDepth = opt.tocDepth || defTocDepth;
+		tocDepth = (opt.tocDepth !== undefined) ? opt.tocDepth : defTocDepth;
 		variables = opt.vars || {};
 		imgBasePath = opt.imgBasePath || dest;
 
@@ -107,10 +107,13 @@ var buildFactory = function(targetFormat, targetExt,
 			'--to=' + targetFormat,
 			'--default-image-extension=' + imgFormat,
 			'--normalize',
-			'--smart',
-			'--toc',
-			'--toc-depth=2'
+			'--smart'
 		];
+
+		if (tocDepth) {
+			cmdline.push('--toc');
+			cmdline.push('--toc-depth=' + tocDepth);
+		}
 
 		if (templatePath) {
 			cmdline.push('--template="' + templatePath + '"');
