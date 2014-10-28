@@ -7,6 +7,7 @@ var rename = require('gulp-rename');
 var ge = require('mdgraphextract');
 var inliner = require('htinliner');
 
+var processIncludes = require('./includes');
 var processStates = require('./states');
 var processReferences = require('./refs');
 var pdfLang = require('./pdflang');
@@ -39,6 +40,7 @@ var buildHtml = function(src, dest, opt) {
 	templatePath = opt.template || html5TemplatePath;
 	return function() {
 		return gulp.src(src)
+			.pipe(processIncludes())
 			.pipe(processStates())
 			.pipe(processReferences({ prefixCaption: true, figureTerm: 'Abbildung' }))
 			.pipe(spawn({
@@ -135,6 +137,7 @@ var buildFactory = function(targetFormat, targetExt,
 		return function() {
 			var s = gulp.src(src);
 
+			s = s.pipe(processIncludes());
 			s = s.pipe(processStates());
 			s = s.pipe(processReferences({ prefixCaption: prefixCaption, figureTerm: 'Abbildung' }));
 			
@@ -194,6 +197,7 @@ var extractGraph = function(src, dest, opt) {
 
 	return function() {
 		return gulp.src(src)
+			.pipe(processIncludes())
 			.pipe(ge(opt))
 			.pipe(spawn({
 				cmd: 'dot',
