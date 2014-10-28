@@ -1,6 +1,12 @@
 var gulp = require('gulp');
 var mdproc = require('../src/index');
 
+gulp.task('includes', 
+	mdproc.buildHtmlTask(
+		['./data/includes.md'],
+		'./tmp/',
+		{  }));
+
 gulp.task('dotex', mdproc.extractGraphTask(
 	['./data/architecture.md', './data/backlog.md'], 
 	'./tmp/', 
