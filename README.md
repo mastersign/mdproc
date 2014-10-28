@@ -1,3 +1,3 @@
 # mdproc
 
-Extended Markdown processing based on pandoc, graphviz and others.
+Extended Markdown pre- and post-processing based on pandoc, graphviz and others.
