@@ -32,6 +32,7 @@
     "htinliner": "mastersign/htinliner",
     "mdgraphextract": "mastersign/mdgraphextract",
     "js-yaml": "^3.2.1",
+    "lodash": "^2.4.1",
     "merge-stream": "^0.1.5",
     "through2": "^0.6.1"
   },
