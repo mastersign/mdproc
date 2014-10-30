@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
 var minifyCss = require('gulp-minify-css');
+var jslint = require('gulp-jslint');
 var less = require('gulp-less');
 var htinliner = require('htinliner');
 
@@ -38,5 +39,14 @@ gulp.task('build_html_template',
 		.pipe(rename('template.standalone.html'))
 		.pipe(gulp.dest('assets/'));
 });
-
 gulp.task('default', ['build_html_template']);
+
+gulp.task('jslint', function () {
+    return gulp.src('./src/*.js')
+        .pipe(jslint({
+            node: true,
+            evil: false,
+            reporter: 'default',
+            errorsOnly: false
+        }));
+});
