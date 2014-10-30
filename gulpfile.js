@@ -1,8 +1,8 @@
 var path = require('path');
+var del = require('del');
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
-var rimraf = require('gulp-rimraf');
 var minifyCss = require('gulp-minify-css');
 var less = require('gulp-less');
 var htinliner = require('htinliner');
@@ -10,9 +10,8 @@ var htinliner = require('htinliner');
 var bowerDir = './bower_components/';
 var tempDir = './tmp/';
 
-gulp.task('clean', function() {
-	gulp.src(tempDir + '**')
-		.pipe(rimraf());
+gulp.task('clean', function (cb) {
+    del([tempDir + '**'], cb);
 });
 
 gulp.task('copy_template', function() {
