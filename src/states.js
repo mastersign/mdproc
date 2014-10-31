@@ -1,6 +1,9 @@
+/* global require, module, Buffer */
+
 var through = require('through2');
 
 var transformFile = function(buffer) {
+    'use strict';
     var result = buffer
         .toString('utf8')
         .replace(
@@ -22,6 +25,7 @@ var transformFile = function(buffer) {
 };
 
 var processStates = function() {
+    'use strict';
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
             this.push(file);

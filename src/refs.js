@@ -1,3 +1,5 @@
+/* global require, module, Buffer */
+
 var through = require('through2');
 
 var defFigureTerm = 'Figure';
@@ -7,6 +9,7 @@ var figureLinePattern = new RegExp('^' + figurePattern.source + '$', 'gm');
 var figureRefPattern = /\[#(\S+)(?:\s+([^\]]*))?\](?!\||\()/g;
 
 var transformFile = function(buffer, opt) {
+    'use strict';
     var encoding, prefixCaption, figureTerm, text;
     var count = 0;
     var ids = {};
@@ -49,6 +52,7 @@ var transformFile = function(buffer, opt) {
 };
 
 var processReferences = function(opt) {
+    'use strict';
     opt = opt || {};
     return through.obj(function(file, enc, cb) {
         opt.encoding = opt.encoding || enc;

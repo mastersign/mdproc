@@ -1,6 +1,9 @@
+/* global require, module, Buffer */
+
 var yaml = require('js-yaml');
 
 var forLines = function(str, pattern, f) {
+    'use strict';
     var p = 0;
     var match, part;
 
@@ -18,6 +21,7 @@ var forLines = function(str, pattern, f) {
 };
 
 var getHeader = function(data, opt) {
+    'use strict';
     var encoding;
     var header = [];
     var nl = /\r?\n/g;

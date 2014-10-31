@@ -1,11 +1,12 @@
+/* global require, module, Buffer */
+
 var through = require('through2');
 var _ = require('lodash');
 var path = require('path');
 var fs = require('fs');
 
 var readFile = function(filePath, pathCache) {
-    var content;
-    a = 1;
+    'use strict';
     if (_.contains(pathCache, filePath)) {
         return '<!-- CIRCULAR INCLUDE REFERENCE: ' + filePath + ' -->';
     }
@@ -17,6 +18,7 @@ var readFile = function(filePath, pathCache) {
 };
 
 var transformText = function(text, referencePath, pathCache) {
+    'use strict';
     pathCache = pathCache || [];
     return text.replace(
         /<!--\s+#include\s+(.+?)\s+-->/g,
@@ -29,6 +31,7 @@ var transformText = function(text, referencePath, pathCache) {
 };
 
 var transformFile = function(buffer, referencePath) {
+    'use strict';
     return new Buffer(
         transformText(
             buffer.toString('utf8'),
@@ -37,6 +40,7 @@ var transformFile = function(buffer, referencePath) {
 };
 
 var processIncludes = function() {
+    'use strict';
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
             this.push(file);

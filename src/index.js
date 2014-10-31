@@ -1,3 +1,5 @@
+/* global module, require, process */
+
 var path = require('path');
 var gulp = require('gulp');
 var spawn = require('gulp-spawn');
@@ -36,7 +38,7 @@ var texInputsPath = path.join(path.dirname(module.filename),
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
 var buildHtml = function(src, dest, opt) {
-    "use strict";
+    'use strict';
 
     var imgFormat;    // the image format as file extension without period
     var imgBasePath;  // the path to use as base for relative images references
@@ -83,7 +85,7 @@ module.exports.buildHtmlTask = buildHtml;
 var buildFactory = function(targetFormat, targetExt,
     defImgFormat, defTemplate, defTocDepth, prefixCaption,
     args, transforms) {
-    "use strict";
+    'use strict';
 
     return function(src, dest, opt) {
         var execOptions;  // the options for the exec call
@@ -200,8 +202,7 @@ module.exports.buildDocxTask = buildFactory(
     'docx', 'docx', 'png', null, 2, true);
 
 var extractGraph = function(src, dest, opt) {
-    "use strict";
-
+    'use strict';
     var imgFormat;  // the image format as file extension without the period
     var mode;       // the extraction mode
     var attributes; // attribute collection for the commandline

@@ -1,3 +1,6 @@
+/* global require, module */
+/* jslint quotmark: false */
+
 var through = require('through2');
 var yamlheader = require('./yamlheader');
 
@@ -63,15 +66,18 @@ var langs = {
 };
 
 var toPdfLang = function(lang) {
+    'use strict';
     return langs[lang] || langs[defLang];
 };
 
 var retrieveLang = function(data, opt) {
+    'use strict';
     var meta = yamlheader(data, opt);
     return meta ? meta.lang : undefined;
 };
 
 var pdfLang = function() {
+    'use strict';
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
             this.push(file);
