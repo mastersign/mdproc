@@ -2,7 +2,7 @@
 
 var yaml = require('js-yaml');
 
-var forLines = function(str, pattern, f) {
+var forLines = function (str, pattern, f) {
     'use strict';
     var p = 0;
     var match, part;
@@ -13,14 +13,16 @@ var forLines = function(str, pattern, f) {
         part = str.slice(p, match.index);
         p = match.index + match[0].length;
         pattern.lastIndex = p;
-        if (f(part) === false) { return; }
+        if (f(part) === false) {
+            return;
+        }
         match = pattern.exec(str);
     }
     part = str.slice(p, str.length);
     f(part);
 };
 
-var getHeader = function(data, opt) {
+var getHeader = function (data, opt) {
     'use strict';
     var encoding;
     var header = [];
@@ -36,7 +38,7 @@ var getHeader = function(data, opt) {
         throw 'Unsupported data type.';
     }
 
-    forLines(data, nl, function(line) {
+    forLines(data, nl, function (line) {
         if (line.trim().length === 0) {
             return true;
         }

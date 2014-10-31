@@ -5,7 +5,7 @@ var _ = require('lodash');
 var path = require('path');
 var fs = require('fs');
 
-var readFile = function(filePath, pathCache) {
+var readFile = function (filePath, pathCache) {
     'use strict';
     if (_.contains(pathCache, filePath)) {
         return '<!-- CIRCULAR INCLUDE REFERENCE: ' + filePath + ' -->';
@@ -17,12 +17,12 @@ var readFile = function(filePath, pathCache) {
     return fs.readFileSync(filePath, 'utf8');
 };
 
-var transformText = function(text, referencePath, pathCache) {
+var transformText = function (text, referencePath, pathCache) {
     'use strict';
     pathCache = pathCache || [];
     return text.replace(
         /<!--\s+#include\s+(.+?)\s+-->/g,
-        function(m, filePath) {
+        function (m, filePath) {
             var branchCache = _.clone(pathCache);
             var absPath = path.resolve(referencePath, filePath);
             var includeContent = readFile(absPath, branchCache);
@@ -30,7 +30,7 @@ var transformText = function(text, referencePath, pathCache) {
         });
 };
 
-var transformFile = function(buffer, referencePath) {
+var transformFile = function (buffer, referencePath) {
     'use strict';
     return new Buffer(
         transformText(
@@ -39,9 +39,9 @@ var transformFile = function(buffer, referencePath) {
         'utf8');
 };
 
-var processIncludes = function() {
+var processIncludes = function () {
     'use strict';
-    return through.obj(function(file, enc, cb) {
+    return through.obj(function (file, enc, cb) {
         if (file.isNull()) {
             this.push(file);
             cb();

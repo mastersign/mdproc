@@ -65,27 +65,29 @@ var langs = {
     "cy": "welsh"
 };
 
-var toPdfLang = function(lang) {
+var toPdfLang = function (lang) {
     'use strict';
     return langs[lang] || langs[defLang];
 };
 
-var retrieveLang = function(data, opt) {
+var retrieveLang = function (data, opt) {
     'use strict';
     var meta = yamlheader(data, opt);
     return meta ? meta.lang : undefined;
 };
 
-var pdfLang = function() {
+var pdfLang = function () {
     'use strict';
-    return through.obj(function(file, enc, cb) {
+    return through.obj(function (file, enc, cb) {
         if (file.isNull()) {
             this.push(file);
             cb();
             return;
         }
         if (file.isBuffer()) {
-            file.pdfLang = toPdfLang(retrieveLang(file.contents, { encoding: enc }));
+            file.pdfLang = toPdfLang(retrieveLang(file.contents, {
+                encoding: enc
+            }));
             this.push(file);
             cb();
             return;
