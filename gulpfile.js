@@ -1,11 +1,10 @@
-"use strict";
 var path = require('path');
 var del = require('del');
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
 var minifyCss = require('gulp-minify-css');
-var jslint = require('gulp-jslint');
+var jshint = require('gulp-jshint');
 var less = require('gulp-less');
 var htinliner = require('htinliner');
 
@@ -44,12 +43,8 @@ gulp.task('build_html_template',
 
 gulp.task('default', ['build_html_template']);
 
-gulp.task('jslint', function () {
+gulp.task('jshint', function () {
     return gulp.src('./src/*.js')
-        .pipe(jslint({
-            node: true,
-            evil: false,
-            reporter: 'default',
-            errorsOnly: false
-        }));
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'));
 });

@@ -62,20 +62,17 @@ var langs = {
     "cy": "welsh"
 };
 
-var toPdfLang = function (lang) {
-    "use strict";
+var toPdfLang = function(lang) {
     return langs[lang] || langs[defLang];
 };
 
-var retrieveLang = function (data, opt) {
-    "use strict";
+var retrieveLang = function(data, opt) {
     var meta = yamlheader(data, opt);
     return meta ? meta.lang : undefined;
 };
 
-var pdfLang = function () {
-    "use strict";
-    return through.obj(function (file, enc, cb) {
+var pdfLang = function() {
+    return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
             this.push(file);
             cb();

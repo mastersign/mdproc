@@ -1,10 +1,8 @@
 var yaml = require('js-yaml');
 
-var forLines = function (str, pattern, f) {
-    "use strict";
-    var p = 0,
-        match,
-        part;
+var forLines = function(str, pattern, f) {
+    var p = 0;
+    var match, part;
 
     pattern.lastIndex = p;
     match = pattern.exec(str);
@@ -19,13 +17,11 @@ var forLines = function (str, pattern, f) {
     f(part);
 };
 
-var getHeader = function (data, opt) {
-    "use strict";
-
-    var encoding,
-        header = [],
-        nl = /\r?\n/g,
-        meta = false;
+var getHeader = function(data, opt) {
+    var encoding;
+    var header = [];
+    var nl = /\r?\n/g;
+    var meta = false;
 
     opt = opt || {};
     encoding = opt.encoding || 'utf8';
@@ -36,7 +32,7 @@ var getHeader = function (data, opt) {
         throw 'Unsupported data type.';
     }
 
-    forLines(data, nl, function (line) {
+    forLines(data, nl, function(line) {
         if (line.trim().length === 0) {
             return true;
         }

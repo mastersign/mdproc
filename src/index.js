@@ -35,19 +35,19 @@ var texInputsPath = path.join(path.dirname(module.filename),
 
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
-var buildHtml = function (src, dest, opt) {
+var buildHtml = function(src, dest, opt) {
     "use strict";
 
-    var imgFormat,    // the image format as file extension without period
-        imgBasePath,  // the path to use as base for relative images references
-        templatePath; // the path to the HTML template file
+    var imgFormat;    // the image format as file extension without period
+    var imgBasePath;  // the path to use as base for relative images references
+    var templatePath; // the path to the HTML template file
 
     opt = opt || {};
     imgFormat = opt.imgFormat || 'svg';
     imgBasePath = opt.imgBasePath || dest;
     templatePath = opt.template || html5TemplatePath;
 
-    return function () {
+    return function() {
         return gulp.src(src)
             .pipe(processIncludes())
             .pipe(processStates())
@@ -68,7 +68,7 @@ var buildHtml = function (src, dest, opt) {
                     '--mathml',
                     '--template', templatePath
                 ],
-                filename: function (base) { return base + '.html'; }
+                filename: function(base) { return base + '.html'; }
             }))
             .pipe(inliner({
                 svgRemoveSize: true,
@@ -80,27 +80,25 @@ var buildHtml = function (src, dest, opt) {
 };
 module.exports.buildHtmlTask = buildHtml;
 
-var buildFactory = function (targetFormat, targetExt,
+var buildFactory = function(targetFormat, targetExt,
     defImgFormat, defTemplate, defTocDepth, prefixCaption,
     args, transforms) {
     "use strict";
 
-    return function (src, dest, opt) {
-        var execOptions,  // the options for the exec call
-            cmdline,      // an array with all command line components
-            imgFormat,    // the image format as file extension without period
-            imgBasePath,  // the base path for relative image references
-            templatePath, // the path to the HTML template
-            tocDepth,     // the depth for the table of contents
-            variables,    // an object with additional template variables
-            key,          // the key of object attributes
-            tmpExt = targetExt + '_tmp',
+    return function(src, dest, opt) {
+        var execOptions;  // the options for the exec call
+        var cmdline;      // an array with all command line components
+        var imgFormat;    // the image format as file extension without period
+        var imgBasePath;  // the base path for relative image references
+        var templatePath; // the path to the HTML template
+        var tocDepth;     // the depth for the table of contents
+        var variables;    // an object with additional template variables
+        var tmpExt = targetExt + '_tmp';
                           // the file name extension for intermediate files
-            contextArgs,  // arguments where functions are resolved to values
-            contextTransforms,
+        var contextArgs;  // arguments where functions are resolved to values
+        var contextTransforms;
                           // additional transformations for the pipeline
-            i,            // iteration variable
-            contextify;   // function to resolve functional args into values
+        var contextify;   // function to resolve functional args into values
 
         opt = opt || {};
         imgFormat = opt.imgFormat || defImgFormat;
@@ -109,7 +107,7 @@ var buildFactory = function (targetFormat, targetExt,
         variables = opt.vars || {};
         imgBasePath = opt.imgBasePath || dest;
 
-        contextify = function (value) {
+        contextify = function(value) {
             if (typeof value === 'function') {
                 return value(src, dest, opt);
             }
@@ -144,22 +142,20 @@ var buildFactory = function (targetFormat, targetExt,
             cmdline.push('--template="' + templatePath + '"');
         }
         if (contextArgs) {
-            for (i = 0; i < contextArgs.length; i = i + 1) {
+            for (var i = 0; i < contextArgs.length; i++) {
                 cmdline.push(contextArgs[i]);
             }
         }
 
-        for (key in variables) {
-            if (variables.hasOwnProperty(key)) {
-                cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
-            }
+        for (var key in variables) {
+            cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
         }
 
         cmdline.push('-o');
         cmdline.push('"<%= file.path %>.' + targetExt + '"');
         cmdline.push('"<%= file.path %>.' + tmpExt + '"');
 
-        return function () {
+        return function() {
             var s = gulp.src(src);
 
             s = s.pipe(processIncludes());
@@ -177,7 +173,7 @@ var buildFactory = function (targetFormat, targetExt,
                 .pipe(rename({ extname: '' }));
 
             if (contextTransforms) {
-                for (i = 0; i < contextTransforms.length; i = i + 1) {
+                for (var i = 0; i < contextTransforms.length; i++) {
                     s = s.pipe(contextTransforms[i]);
                 }
             }
@@ -191,24 +187,26 @@ var buildFactory = function (targetFormat, targetExt,
     };
 };
 
-module.exports.buildPdfTask = buildFactory('latex', 'pdf', 'pdf',
-        latexTemplatePath, 2, false,
-        [ '--latex-engine=xelatex',
-          '--variable=documentclass:scrartcl',
-          '--variable=lang:<%= file.pdfLang %>' ],
-        [ pdfLang() ]);
+module.exports.buildPdfTask = buildFactory(
+    'latex', 'pdf', 'pdf', latexTemplatePath, 2, false,
+    [
+        '--latex-engine=xelatex',
+        '--variable=documentclass:scrartcl',
+        '--variable=lang:<%= file.pdfLang %>'
+    ],
+    [ pdfLang() ]);
 
-module.exports.buildDocxTask = buildFactory('docx', 'docx', 'png',
-        null, 2, true);
+module.exports.buildDocxTask = buildFactory(
+    'docx', 'docx', 'png', null, 2, true);
 
-var extractGraph = function (src, dest, opt) {
+var extractGraph = function(src, dest, opt) {
     "use strict";
 
-    var imgFormat,  // the image format as file extension without the period
-        mode,       // the extraction mode
-        attributes, // attribute collection for the commandline
-        a,          // iteration variable
-        args = [];  // the commandline arguments
+    var imgFormat;  // the image format as file extension without the period
+    var mode;       // the extraction mode
+    var attributes; // attribute collection for the commandline
+    var a;          // single attribute in iterations
+    var args = [];  // the commandline arguments
 
     opt = opt || {};
     imgFormat = opt.imgFormat || 'svg';
@@ -218,30 +216,24 @@ var extractGraph = function (src, dest, opt) {
 
     attributes = opt.graphAttributes || {};
     for (a in attributes) {
-        if (attributes.hasOwnProperty(a)) {
-            args.push('-G' + a + '=' + attributes[a]);
-        }
+        args.push('-G' + a + '=' + attributes[a]);
     }
     attributes = opt.nodeAttributes || {};
     for (a in attributes) {
-        if (attributes.hasOwnProperty(a)) {
-            args.push('-N' + a + '=' + attributes[a]);
-        }
+        args.push('-N' + a + '=' + attributes[a]);
     }
     attributes = opt.edgeAttributes || {};
     for (a in attributes) {
-        if (attributes.hasOwnProperty(a)) {
-            args.push('-E' + a + '=' + attributes[a]);
-        }
+        args.push('-E' + a + '=' + attributes[a]);
     }
 
-    return function () {
+    return function() {
         return gulp.src(src)
             .pipe(ge(opt))
             .pipe(spawn({
                 cmd: 'dot',
                 args: args,
-                filename: function (base) {
+                filename: function(base) {
                     return base + '_' + mode + '.' + imgFormat;
                 }
             }))

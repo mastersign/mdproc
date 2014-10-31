@@ -1,12 +1,11 @@
 var through = require('through2');
 
-var transformFile = function (buffer) {
-    "use strict";
+var transformFile = function(buffer) {
     var result = buffer
         .toString('utf8')
         .replace(
             /<!--\s+#state\s+(\S+)\s+-->/g,
-            function (m, typ) {
+            function(m, typ) {
                 switch (typ) {
                 case 'open':
                     return '<span class="state open">offen</span>';
@@ -22,9 +21,8 @@ var transformFile = function (buffer) {
     return new Buffer(result, 'utf8');
 };
 
-var processStates = function () {
-    "use strict";
-    return through.obj(function (file, enc, cb) {
+var processStates = function() {
+    return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
             this.push(file);
             cb();

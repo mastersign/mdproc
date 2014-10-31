@@ -6,34 +6,25 @@ var figurePattern = /!\[#(\S+)(?:\s+([^\]]*))?\]((?:\([^\)]*\)|\[[^\]]*\])?)/g;
 var figureLinePattern = new RegExp('^' + figurePattern.source + '$', 'gm');
 var figureRefPattern = /\[#(\S+)(?:\s+([^\]]*))?\](?!\||\()/g;
 
-var transformFile = function (buffer, opt) {
-    "use strict";
+var transformFile = function(buffer, opt) {
+    var encoding, prefixCaption, figureTerm, text;
+    var count = 0;
+    var ids = {};
 
-    var encoding,      //
-        prefixCaption, //
-        figureTerm,
-        text,
-        count = 0,
-        ids = {},
-        registerFigure,
-        figureLabel,
-        figureReplacer,
-        figureRefReplacer;
-
-    registerFigure = function (id) {
+    var registerFigure = function(id) {
         if (!ids[id]) {
             count = count + 1;
             ids[id] = count;
         }
     };
 
-    figureLabel = function (id) {
+    var figureLabel = function(id) {
         var no = ids[id] || '???';
         return figureTerm + ' ' + no;
     };
 
-    figureReplacer = function (sep) {
-        return function (m, id, alt, ref) {
+    var figureReplacer = function(sep) {
+        return function(m, id, alt, ref) {
             var label;
             registerFigure(id);
             label = prefixCaption ? (figureLabel(id) + ': ') : '';
@@ -41,7 +32,7 @@ var transformFile = function (buffer, opt) {
         };
     };
 
-    figureRefReplacer = function (m, id, alt) {
+    var figureRefReplacer = function(m, id, alt) {
         return '[' + (alt || figureLabel(id)) + '](#' + id + ')';
     };
 
@@ -57,11 +48,9 @@ var transformFile = function (buffer, opt) {
     return new Buffer(text, encoding);
 };
 
-var processReferences = function (opt) {
-    "use strict";
-
+var processReferences = function(opt) {
     opt = opt || {};
-    return through.obj(function (file, enc, cb) {
+    return through.obj(function(file, enc, cb) {
         opt.encoding = opt.encoding || enc;
         if (file.isNull()) {
             this.push(file);
