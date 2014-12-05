@@ -4,9 +4,9 @@ var through = require('through2');
 
 var defFigureTerm = 'Figure';
 
-var figurePattern = /!\[#(\S+)(?:\s+([^\]]*))?\]((?:\([^\)]*\)|\[[^\]]*\])?)/g;
+var figurePattern = /!\[#([^\s\]]+)(?:\s+([^\]]*))?\]((?:\([^\)]*\)|\[[^\]]*\])?)/g;
 var figureLinePattern = new RegExp('^' + figurePattern.source + '$', 'gm');
-var figureRefPattern = /\[#(\S+)(?:\s+([^\]]*))?\](?!\||\()/g;
+var figureRefPattern = /\[#([^\s\]]+)(?:\s+([^\]]*))?\](?!\||\()/g;
 
 var transformFile = function (buffer, opt) {
     'use strict';
