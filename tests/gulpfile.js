@@ -7,6 +7,12 @@ gulp.task('includes',
 		'./tmp/',
 		{  }));
 
+gulp.task('csv', 
+	mdproc.buildHtmlTask(
+		['./data/csv.md'],
+		'./tmp/',
+		{  }));
+
 gulp.task('dotex', mdproc.extractGraphTask(
 	['./data/architecture.md', './data/backlog.md'], 
 	'./tmp/', 

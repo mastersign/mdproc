@@ -1,0 +1,11 @@
+# header
+
+"column A", "column B",C
+
+# comment 1
+"1",100, "x,y, z"
+2, 101, "äöü"
+3.0, 102, test text
+
+# comment 2
+4.0, 103, "something else"

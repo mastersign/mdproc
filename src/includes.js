@@ -4,6 +4,7 @@ var through = require('through2');
 var _ = require('lodash');
 var path = require('path');
 var fs = require('fs');
+var csv = require('./csv');
 
 var readFile = function (filePath, pathCache) {
     'use strict';
@@ -17,10 +18,51 @@ var readFile = function (filePath, pathCache) {
     return fs.readFileSync(filePath, 'utf8');
 };
 
+var csvTable = function(csvText) {
+    var data = '';
+    var result = '';
+    var headline = true;
+
+    data = csv(csvText);
+
+    // cleanup data: ignore empty lines, ignore # comments
+    data = _.filter(data, function(row) {
+            return row.length > 1 ||
+                (row[0].trim().length > 0 &&
+                 !row[0].trim()[0] == '#');
+    });
+    console.log(data);
+
+    var formatRow = function(rowData, headline) {
+        var r = '|';
+        for (var i = 0; i < rowData.length; i++) {
+            v = rowData[i]
+            r += ' ' + v + ' |';
+        };
+        r += '\n';
+        if (headline) {
+            r += '|';
+            for (var i = 0; i < rowData.length; i++) {
+            v = rowData[i]
+                r += (new Array(v.length + 2).join('-')) + '|';
+            }
+            r += '\n';
+        }
+        return r;
+    }
+
+    for (var i = 0; i < data.length; i++) {
+        row = data[i]
+        result += formatRow(row, headline);
+        headline = false;
+    };
+    return result;
+};
+
 var transformText = function (text, referencePath, pathCache) {
     'use strict';
     pathCache = pathCache || [];
-    return text.replace(
+    text = text.replace(
         /<!--\s+#include\s+(.+?)\s+-->/g,
         function (m, filePath) {
             var branchCache = _.clone(pathCache);
@@ -28,6 +70,15 @@ var transformText = function (text, referencePath, pathCache) {
             var includeContent = readFile(absPath, branchCache);
             return transformText(includeContent, path.dirname(absPath), branchCache);
         });
+    text = text.replace(
+        /<!--\s+#csv\s+(.+?)\s+-->/g,
+        function (m, filePath) {
+            console.log(filePath);
+            var absPath = path.resolve(referencePath, filePath);
+            var csvContent = readFile(absPath, []);
+            return csvTable(csvContent);
+        });
+    return text;
 };
 
 var transformFile = function (buffer, referencePath) {
