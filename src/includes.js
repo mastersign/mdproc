@@ -28,10 +28,9 @@ var csvTable = function(csvText) {
     // cleanup data: ignore empty lines, ignore # comments
     data = _.filter(data, function(row) {
             return row.length > 0 &&
-                row[0].trim().length > 0 &&
+                (row.length > 1 || row[0].trim().length > 0) &&
                 row[0].trim()[0] != '#';
     });
-    console.log(data);
 
     var formatRow = function(rowData, headline) {
         var r = '|';
@@ -77,7 +76,6 @@ var transformText = function (text, referencePath, pathCache) {
     text = text.replace(
         /<!--\s+#csv\s+(.+?)\s+-->/g,
         function (m, filePath) {
-            console.log(filePath);
             var absPath = path.resolve(referencePath, filePath);
             var csvContent = readFile(absPath, []);
             return csvTable(csvContent);
