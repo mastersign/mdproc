@@ -55,8 +55,13 @@ var csvTable = function(csvText) {
         result += formatRow(row, headline);
         headline = false;
     };
+
+    // append empty row if table is empty
     if (data.length == 1) {
         row = new Array(data[0].length);
+        for (var i = 0; i < row.length; i++) {
+            row[i] = '';
+        };
         result += formatRow(row, false);
     }
     return result;
