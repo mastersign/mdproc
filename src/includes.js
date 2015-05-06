@@ -32,23 +32,31 @@ var csvTable = function(csvText) {
                 row[0].trim()[0] != '#';
     });
 
+    var escapeCellValue = function(value) {
+        return value.
+            replace('|', '&#124;').
+            replace('<', '&lt;').
+            replace('>', '&gt;').
+            replace('$', '\\$');
+    };
+
     var formatRow = function(rowData, headline) {
         var r = '|';
         for (var i = 0; i < rowData.length; i++) {
-            v = rowData[i]
+            v = escapeCellValue(rowData[i]);
             r += ' ' + v + ' |';
         };
         r += '\n';
         if (headline) {
             r += '|';
             for (var i = 0; i < rowData.length; i++) {
-            v = rowData[i]
+                v = escapeCellValue(rowData[i]);
                 r += (new Array(v.length + 2).join('-')) + '|';
             }
             r += '\n';
         }
         return r;
-    }
+    };
 
     for (var i = 0; i < data.length; i++) {
         row = data[i]
