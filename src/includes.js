@@ -27,9 +27,9 @@ var csvTable = function(csvText) {
 
     // cleanup data: ignore empty lines, ignore # comments
     data = _.filter(data, function(row) {
-            return row.length > 1 ||
-                (row[0].trim().length > 0 &&
-                 !row[0].trim()[0] == '#');
+            return row.length > 0 &&
+                row[0].trim().length > 0 &&
+                row[0].trim()[0] != '#';
     });
     console.log(data);
 
@@ -56,6 +56,10 @@ var csvTable = function(csvText) {
         result += formatRow(row, headline);
         headline = false;
     };
+    if (data.length == 1) {
+        row = new Array(data[0].length);
+        result += formatRow(row, false);
+    }
     return result;
 };
 
