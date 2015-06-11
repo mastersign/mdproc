@@ -241,6 +241,7 @@ var extractGraph = function (src, dest, opt) {
 
     return function () {
         return gulp.src(src)
+            .pipe(processIncludes())
             .pipe(ge(opt))
             .pipe(spawn({
                 cmd: 'dot',
