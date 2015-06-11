@@ -8,8 +8,8 @@ var rename = require('gulp-rename');
 
 var ge = require('mdgraphextract');
 var inliner = require('htinliner');
+var processIncludes = require('mdinclude');
 
-var processIncludes = require('./includes');
 var processStates = require('./states');
 var processReferences = require('./refs');
 var pdfLang = require('./pdflang');

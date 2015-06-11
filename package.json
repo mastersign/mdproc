@@ -1,6 +1,6 @@
 {
   "name": "mdproc",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Extended Markdown processing based on pandoc, graphviz and others.",
   "readme": "README.md",
   "keywords": [
@@ -34,6 +34,7 @@
     "js-yaml": "^3.2.1",
     "lodash": "^2.4.1",
     "mdgraphextract": "mastersign/mdgraphextract",
+    "mdinclude": "mastersign/mdinclude",
     "merge-stream": "^0.1.5",
     "through2": "^0.6.1"
   },
