@@ -216,6 +216,7 @@ var extractGraph = function (src, dest, opt) {
     'use strict';
     var imgFormat; // the image format as file extension without the period
     var mode; // the extraction mode
+    var imgName; // the image name
     var attributes; // attribute collection for the commandline
     var a; // single attribute in iterations
     var args = []; // the commandline arguments
@@ -223,6 +224,7 @@ var extractGraph = function (src, dest, opt) {
     opt = opt || {};
     imgFormat = opt.imgFormat || 'svg';
     mode = opt.mode || 'auto';
+    imgName = opt.imgName;
 
     args.push('-T' + imgFormat);
 
@@ -247,8 +249,9 @@ var extractGraph = function (src, dest, opt) {
                 cmd: 'dot',
                 args: args,
                 filename: function (base) {
-                    return base + '_' + mode + '.' +
-                        imgFormat;
+                    return imgName ?
+                        imgName + '.' + imgFormat :
+                        base + '_' + mode + '.' + imgFormat;
                 }
             }))
             .pipe(gulp.dest(dest));
