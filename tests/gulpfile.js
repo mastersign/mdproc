@@ -29,4 +29,4 @@ gulp.task('md2html', ['dotex', 'autograph'],
 		'./tmp/',
 		{  }));
 
-gulp.task('default', ['md2html']);
+gulp.task('default', ['md2html', 'includes', 'csv']);
