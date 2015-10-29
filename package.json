@@ -1,6 +1,6 @@
 {
   "name": "mdproc",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Extended Markdown processing based on pandoc, graphviz and others.",
   "readme": "README.md",
   "keywords": [
@@ -30,11 +30,11 @@
     "gulp-jslint": "^0.1.9",
     "gulp-rename": "^1.2.2",
     "gulp-spawn": "^0.3.0",
-    "htinliner": "mastersign/htinliner",
+    "htinliner": "^0.1.2",
     "js-yaml": "^3.3.1",
     "lodash": "^3.9.3",
-    "mdgraphextract": "mastersign/mdgraphextract",
-    "mdinclude": "mastersign/mdinclude",
+    "mdgraphextract": "^0.1.10",
+    "mdinclude": "^0.1.1",
     "merge-stream": "^0.1.7",
     "through2": "^0.6.5"
   },
