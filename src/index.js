@@ -218,6 +218,12 @@ module.exports.buildPdfTask = buildFactory(
         '--variable=lang:<%= file.pdfLang %>'
     ], [pdfLang()]);
 
+module.exports.buildLaTeXTask = buildFactory(
+    'latex', 'tex', 'pdf', latexTemplatePath, 2, false, [
+        '--variable=documentclass:scrartcl',
+        '--variable=lang:<%= file.pdfLang %>'
+    ], [pdfLang()]);
+
 module.exports.buildDocxTask = buildFactory(
     'docx', 'docx', 'png', null, 2, true);
 
