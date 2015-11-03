@@ -23,10 +23,14 @@ gulp.task('autograph', mdproc.extractGraphTask(
 	'./tmp/', 
 	{ autographLevel: 2 }));
 
+var customTextTransform = function (s) { 
+	return s.replace(/included/g, '_included_'); 
+};
+
 gulp.task('md2html', ['dotex', 'autograph'],
 	mdproc.buildHtmlTask(
 		'./data/*.md',
 		'./tmp/',
-		{  }));
+		{ customTransformation: customTextTransform }));
 
 gulp.task('default', ['md2html', 'includes', 'csv']);
