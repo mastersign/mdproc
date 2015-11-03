@@ -30,13 +30,14 @@
     "gulp-jslint": "^0.1.9",
     "gulp-rename": "^1.2.2",
     "gulp-spawn": "^0.3.0",
+    "gulp-text-simple": "^0.1.0",
     "htinliner": "^0.1.2",
     "js-yaml": "^3.3.1",
     "lodash": "^3.9.3",
     "mdgraphextract": "^0.1.10",
     "mdinclude": "^0.1.1",
     "merge-stream": "^0.1.7",
-    "through2": "^0.6.5"
+    "through2": "^2.0.0"
   },
   "devDependencies": {
     "del": "^0.1.3",

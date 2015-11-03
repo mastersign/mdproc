@@ -5,6 +5,7 @@ var gulp = require('gulp');
 var spawn = require('gulp-spawn');
 var exec = require('gulp-exec');
 var rename = require('gulp-rename');
+var textTransform = require('gulp-text-simple');
 
 var ge = require('mdgraphextract');
 var inliner = require('htinliner');
@@ -43,15 +44,19 @@ var buildHtml = function (src, dest, opt) {
     var imgFormat; // the image format as file extension without period
     var imgBasePath; // the path to use as base for relative images references
     var templatePath; // the path to the HTML template file
+    var customTransform; // a function taking a string and returning a string
+                         // for custom processing the Markdown text
 
     opt = opt || {};
     imgFormat = opt.imgFormat || 'svg';
     imgBasePath = opt.imgBasePath || dest;
     templatePath = opt.template || html5TemplatePath;
+    customTransform = opt.customTransformation || function (s) { return s; };
 
     return function () {
         return gulp.src(src)
             .pipe(processIncludes())
+            .pipe(textTransform(customTransform))
             .pipe(processStates())
             .pipe(processReferences({
                 prefixCaption: true,
@@ -96,6 +101,8 @@ var buildFactory = function (targetFormat, targetExt,
         var imgFormat; // the image format as file extension without period
         var imgBasePath; // the base path for relative image references
         var templatePath; // the path to the HTML template
+        var customTransform; // a function taking a string and returning a string
+                             // for custom processing the Markdown text
         var tocDepth; // the depth for the table of contents
         var variables; // an object with additional template variables
         var tmpExt = targetExt + '_tmp'; // the file name extension for intermediate files
@@ -106,6 +113,7 @@ var buildFactory = function (targetFormat, targetExt,
         opt = opt || {};
         imgFormat = opt.imgFormat || defImgFormat;
         templatePath = opt.template || defTemplate;
+        customTransform = opt.customTransformation || function (s) { return s; };
         tocDepth = (opt.tocDepth !== undefined) ? opt.tocDepth :
             defTocDepth;
         variables = opt.vars || {};
@@ -163,6 +171,7 @@ var buildFactory = function (targetFormat, targetExt,
             var s = gulp.src(src);
 
             s = s.pipe(processIncludes());
+            s = s.pipe(textTransform(customTransform));
             s = s.pipe(processStates());
             s = s.pipe(processReferences({
                 prefixCaption: prefixCaption,
