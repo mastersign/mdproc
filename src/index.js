@@ -5,6 +5,7 @@ var gulp = require('gulp');
 var spawn = require('gulp-spawn');
 var exec = require('gulp-exec');
 var rename = require('gulp-rename');
+var del = require('del');
 var textTransform = require('gulp-text-simple');
 
 var ge = require('mdgraphextract');
@@ -116,6 +117,7 @@ var buildFactory = function (targetFormat, targetExt,
         var tocDepth; // the depth for the table of contents
         var variables; // an object with additional template variables
         var tmpExt; // the file name extension for intermediate files
+        var cleanupTmp; // switch to prevent the cleanup of temporary files
         var contextArgs; // arguments where functions are resolved to values
         var contextTransforms; // additional transformations for the pipeline
         var contextify; // function to resolve functional args into values
@@ -130,6 +132,7 @@ var buildFactory = function (targetFormat, targetExt,
             opt.tocDepth : defTocDepth;
         variables = opt.vars || {};
         tmpExt = targetExt + '_tmp';
+        cleanupTmp = opt.cleanupTempFiles !== false;
         imgBasePath = opt.imgBasePath || dest;
 
         contextify = function (value) {
@@ -219,7 +222,13 @@ var buildFactory = function (targetFormat, targetExt,
             s = s
                 .pipe(exec(cmdline.join(' '), execOptions))
                 .pipe(exec.reporter());
-
+            
+            if (cleanupTmp) {
+                s.on('end', function() {
+                    del.sync(dest + '/**/*.' + tmpExt);
+                });
+            }
+            
             return s;
         };
     };
