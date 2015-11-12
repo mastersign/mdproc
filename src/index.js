@@ -38,6 +38,8 @@ var texInputsPath = path.join(path.dirname(module.filename),
 
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
+var identity = function (x) { return x; };
+
 var buildHtml = function (src, dest, opt) {
     'use strict';
 
@@ -51,7 +53,7 @@ var buildHtml = function (src, dest, opt) {
     imgFormat = opt.imgFormat || 'svg';
     imgBasePath = opt.imgBasePath || dest;
     templatePath = opt.template || html5TemplatePath;
-    customTransform = opt.customTransformation || function (s) { return s; };
+    customTransform = opt.customTransformation || identity;
 
     return function () {
         return gulp.src(src)
@@ -105,7 +107,7 @@ var buildFactory = function (targetFormat, targetExt,
                              // for custom processing the Markdown text
         var tocDepth; // the depth for the table of contents
         var variables; // an object with additional template variables
-        var tmpExt = targetExt + '_tmp'; // the file name extension for intermediate files
+        var tmpExt; // the file name extension for intermediate files
         var contextArgs; // arguments where functions are resolved to values
         var contextTransforms; // additional transformations for the pipeline
         var contextify; // function to resolve functional args into values
@@ -113,10 +115,11 @@ var buildFactory = function (targetFormat, targetExt,
         opt = opt || {};
         imgFormat = opt.imgFormat || defImgFormat;
         templatePath = opt.template || defTemplate;
-        customTransform = opt.customTransformation || function (s) { return s; };
-        tocDepth = (opt.tocDepth !== undefined) ? opt.tocDepth :
-            defTocDepth;
+        customTransform = opt.customTransformation || identity;
+        tocDepth = opt.tocDepth !== undefined ? 
+            opt.tocDepth : defTocDepth;
         variables = opt.vars || {};
+        tmpExt = targetExt + '_tmp';
         imgBasePath = opt.imgBasePath || dest;
 
         contextify = function (value) {
