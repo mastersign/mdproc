@@ -13,6 +13,7 @@ var processIncludes = require('mdinclude');
 
 var processStates = require('./states');
 var processReferences = require('./refs');
+var linkext = require('./linkext');
 var pdfLang = require('./pdflang');
 
 var inputFormat = [
@@ -48,17 +49,22 @@ var buildHtml = function (src, dest, opt) {
     var templatePath; // the path to the HTML template file
     var customTransform; // a function taking a string and returning a string
                          // for custom processing the Markdown text
+    var linkExtTransform; // a function taking a string and returning a string
+                          // for adaptation of hyperlinks to other Markdown documents
 
     opt = opt || {};
     imgFormat = opt.imgFormat || 'svg';
     imgBasePath = opt.imgBasePath || dest;
     templatePath = opt.template || html5TemplatePath;
     customTransform = opt.customTransformation || identity;
+    linkExtTransform = opt.adaptMdLinks !== false ? 
+        linkext('.md', '.html') : identity;
 
     return function () {
         return gulp.src(src)
             .pipe(processIncludes())
             .pipe(textTransform(customTransform))
+            .pipe(textTransform(linkExtTransform))
             .pipe(processStates())
             .pipe(processReferences({
                 prefixCaption: true,
@@ -105,6 +111,8 @@ var buildFactory = function (targetFormat, targetExt,
         var templatePath; // the path to the HTML template
         var customTransform; // a function taking a string and returning a string
                              // for custom processing the Markdown text
+        var linkExtTransform; // a function taking a string and returning a string
+                               // for adaptation of hyperlinks to other Markdown documents
         var tocDepth; // the depth for the table of contents
         var variables; // an object with additional template variables
         var tmpExt; // the file name extension for intermediate files
@@ -116,6 +124,8 @@ var buildFactory = function (targetFormat, targetExt,
         imgFormat = opt.imgFormat || defImgFormat;
         templatePath = opt.template || defTemplate;
         customTransform = opt.customTransformation || identity;
+        linkExtTransform = opt.adaptMdLinks !== false ? 
+            linkext('.md', '.' + targetExt) : identity;
         tocDepth = opt.tocDepth !== undefined ? 
             opt.tocDepth : defTocDepth;
         variables = opt.vars || {};
@@ -175,6 +185,7 @@ var buildFactory = function (targetFormat, targetExt,
 
             s = s.pipe(processIncludes());
             s = s.pipe(textTransform(customTransform));
+            s = s.pipe(textTransform(linkExtTransform));
             s = s.pipe(processStates());
             s = s.pipe(processReferences({
                 prefixCaption: prefixCaption,
