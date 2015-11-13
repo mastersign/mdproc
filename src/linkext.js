@@ -10,7 +10,7 @@ module.exports = function (oldExt, newExt) {
 					return str;
 				}
 				var p = uriParsed.pathname;
-				if (p.endsWith(oldExt)) {
+				if (p && p.endsWith(oldExt)) {
 					var uriAdapted = {
 						pathname: p.slice(0, -oldExt.length) + newExt,
 						hash: uriParsed.hash
