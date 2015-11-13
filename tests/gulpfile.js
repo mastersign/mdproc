@@ -13,6 +13,12 @@ gulp.task('csv',
 		'./tmp/',
 		{  }));
 
+gulp.task('links',
+	mdproc.buildHtmlTask(
+		['./data/links.md'],
+		'./tmp/',
+		{  }));
+
 gulp.task('dotex_svg', 
 	mdproc.extractGraphTask(
 		['./data/architecture.md', './data/backlog.md'], 
