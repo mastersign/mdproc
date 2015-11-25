@@ -42,63 +42,6 @@ process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
 var identity = function (x) { return x; };
 
-var buildHtml = function (src, dest, opt) {
-    'use strict';
-
-    var imgFormat; // the image format as file extension without period
-    var imgBasePath; // the path to use as base for relative images references
-    var templatePath; // the path to the HTML template file
-    var customTransform; // a function taking a string and returning a string
-                         // for custom processing the Markdown text
-    var linkExtTransform; // a function taking a string and returning a string
-                          // for adaptation of hyperlinks to other Markdown documents
-
-    opt = opt || {};
-    imgFormat = opt.imgFormat || 'svg';
-    imgBasePath = opt.imgBasePath || dest;
-    templatePath = opt.template || html5TemplatePath;
-    customTransform = opt.customTransformation || identity;
-    linkExtTransform = opt.adaptMdLinks !== false ? 
-        linkext('.md', '.html') : identity;
-
-    return function () {
-        return gulp.src(src)
-            .pipe(processIncludes())
-            .pipe(textTransform(customTransform))
-            .pipe(textTransform(linkExtTransform))
-            .pipe(processStates())
-            .pipe(processReferences({
-                prefixCaption: true,
-                figureTerm: 'Abbildung'
-            }))
-            .pipe(spawn({
-                cmd: 'pandoc',
-                args: [
-                    '--from=' + inputFormat.join('+'),
-                    '--to=html5',
-                    '--default-image-extension=' +
-                    imgFormat,
-                    '--normalize',
-                    '--smart',
-                    '--toc',
-                    '--toc-depth=2',
-                    '--mathml',
-                    '--template', templatePath
-                ],
-                filename: function (base) {
-                    return base + '.html';
-                }
-            }))
-            .pipe(inliner({
-                svgRemoveSize: true,
-                svgWrapElement: 'div',
-                basePath: imgBasePath
-            }))
-            .pipe(gulp.dest(dest));
-    };
-};
-module.exports.buildHtmlTask = buildHtml;
-
 var buildFactory = function (targetFormat, targetExt,
     defImgFormat, defTemplate, defTocDepth, prefixCaption,
     args, transforms) {
@@ -126,9 +69,9 @@ var buildFactory = function (targetFormat, targetExt,
         imgFormat = opt.imgFormat || defImgFormat;
         templatePath = opt.template || defTemplate;
         customTransform = opt.customTransformation || identity;
-        linkExtTransform = opt.adaptMdLinks !== false ? 
+        linkExtTransform = opt.adaptMdLinks !== false ?
             linkext('.md', '.' + targetExt) : identity;
-        tocDepth = opt.tocDepth !== undefined ? 
+        tocDepth = opt.tocDepth !== undefined ?
             opt.tocDepth : defTocDepth;
         variables = opt.vars || {};
         tmpExt = targetExt + '_tmp';
@@ -164,6 +107,10 @@ var buildFactory = function (targetFormat, targetExt,
         if (tocDepth) {
             cmdline.push('--toc');
             cmdline.push('--toc-depth=' + tocDepth);
+        }
+
+        if (targetFormat === 'html') {
+            cmdline.push('--mathml');
         }
 
         if (templatePath) {
@@ -204,15 +151,6 @@ var buildFactory = function (targetFormat, targetExt,
                     extname: ''
                 }));
 
-            s = s
-                .pipe(rename({
-                    extname: '.' + tmpExt
-                }))
-                .pipe(gulp.dest(dest))
-                .pipe(rename({
-                    extname: ''
-                }));
-
             if (contextTransforms) {
                 for (var i = 0; i < contextTransforms.length; i++) {
                     s = s.pipe(contextTransforms[i]);
@@ -222,17 +160,35 @@ var buildFactory = function (targetFormat, targetExt,
             s = s
                 .pipe(exec(cmdline.join(' '), execOptions))
                 .pipe(exec.reporter());
-            
+
+            if (targetFormat === 'html') {
+                s = s
+                    .pipe(rename({
+                        extname: '.' + targetExt
+                    }))
+                    .pipe(inliner({
+                        svgRemoveSize: true,
+                        svgWrapElement: 'div',
+                        basePath: imgBasePath
+                    }));
+            }
+
             if (cleanupTmp) {
                 s.on('end', function() {
                     del.sync(dest + '/**/*.' + tmpExt);
                 });
             }
-            
+
             return s;
         };
     };
 };
+
+module.exports.buildHtmlTask = buildFactory(
+    'html5', 'html', 'svg', html5TemplatePath, 2, true);
+
+module.exports.buildDocxTask = buildFactory(
+    'docx', 'docx', 'png', null, 2, true);
 
 module.exports.buildPdfTask = buildFactory(
     'latex', 'pdf', 'pdf', latexTemplatePath, 2, false, [
@@ -246,9 +202,6 @@ module.exports.buildLaTeXTask = buildFactory(
         '--variable=documentclass:scrartcl',
         '--variable=lang:<%= file.pdfLang %>'
     ], [pdfLang()]);
-
-module.exports.buildDocxTask = buildFactory(
-    'docx', 'docx', 'png', null, 2, true);
 
 var extractGraph = function (src, dest, opt) {
     'use strict';
