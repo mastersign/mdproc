@@ -1,3 +1,5 @@
+/* globals require */
+
 var gulp = require('gulp');
 var mdproc = require('../src/index');
 
