@@ -6,7 +6,8 @@
   "keywords": [
     "markdown",
     "pandoc",
-    "documentation"
+    "documentation",
+    "gulp"
   ],
   "author": {
     "name": "Tobias Kiertscher",
