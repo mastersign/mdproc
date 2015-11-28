@@ -11,6 +11,7 @@ var textTransform = require('gulp-text-simple');
 var ge = require('mdgraphextract');
 var inliner = require('htinliner');
 var processIncludes = require('mdinclude');
+var processQueries = require('mdquery').transform;
 
 var processStates = require('./states');
 var processReferences = require('./refs');
@@ -134,6 +135,7 @@ var buildFactory = function (targetFormat, targetExt,
             var s = gulp.src(src);
 
             s = s.pipe(processIncludes());
+            s = s.pipe(processQueries());
             s = s.pipe(textTransform(customTransform));
             s = s.pipe(textTransform(linkExtTransform));
             s = s.pipe(processStates());
