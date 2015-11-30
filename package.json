@@ -36,7 +36,7 @@
     "htinliner": "^0.2.0",
     "js-yaml": "^3.0.0",
     "lodash": "^3.0.0",
-    "mdgraphextract": "^0.1.10",
+    "mdgraphextract": "^0.1.13",
     "mdinclude": "^0.3.0",
     "mdquery": "^0.2.0",
     "merge-stream": "^1.0.0",
