@@ -11,13 +11,11 @@
   ],
   "author": {
     "name": "Tobias Kiertscher",
-    "email": "dev@mastersign.de"
+    "email": "dev@mastersign.de",
+    "url": "http://www.mastersign.de"
   },
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mastersign/mdproc.git"
-  },
+  "repository": "mastersign/mdproc",
   "bugs": {
     "url": "https://github.com/mastersign/mdproc/issues"
   },
