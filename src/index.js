@@ -136,8 +136,8 @@ var buildFactory = function (targetFormat, targetExt,
 
             s = s.pipe(processIncludes());
             s = s.pipe(processQueries());
-            s = s.pipe(textTransform(customTransform));
-            s = s.pipe(textTransform(linkExtTransform));
+            s = s.pipe(textTransform(customTransform)());
+            s = s.pipe(textTransform(linkExtTransform)());
             s = s.pipe(processStates());
             s = s.pipe(processReferences({
                 prefixCaption: prefixCaption,
