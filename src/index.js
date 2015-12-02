@@ -1,6 +1,7 @@
 /* global module, require, process */
 
 var path = require('path');
+var fs = require('fs');
 var gulp = require('gulp');
 var spawn = require('gulp-spawn');
 var exec = require('gulp-exec');
@@ -42,6 +43,10 @@ var texInputsPath = path.join(path.dirname(module.filename),
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
 var identity = function (x) { return x; };
+
+var reloadContents = textTransform(function (content, options) {
+    return fs.readFileSync(options.sourcePath, 'utf-8');
+});
 
 var buildFactory = function (targetFormat, targetExt,
     defImgFormat, defTemplate, defTocDepth, prefixCaption,
@@ -110,7 +115,7 @@ var buildFactory = function (targetFormat, targetExt,
             cmdline.push('--toc-depth=' + tocDepth);
         }
 
-        if (targetFormat === 'html') {
+        if (targetFormat === 'html5') {
             cmdline.push('--mathml');
         }
 
@@ -163,16 +168,23 @@ var buildFactory = function (targetFormat, targetExt,
                 .pipe(exec(cmdline.join(' '), execOptions))
                 .pipe(exec.reporter());
 
-            if (targetFormat === 'html') {
+            if (targetFormat === 'html5') {
                 s = s
+                    // change the name of the vinyl file from the
+                    // temporary markdown file to the target html file
                     .pipe(rename({
                         extname: '.' + targetExt
                     }))
+                    // load the content of the target files created by pandoc
+                    .pipe(reloadContents())
+                    // inline SVG images, etc.
                     .pipe(inliner({
                         svgRemoveSize: true,
                         svgWrapElement: 'div',
-                        basePath: imgBasePath
-                    }));
+                        sourcePath: imgBasePath
+                    }))
+                    // override the target files
+                    .pipe(gulp.dest(dest));
             }
 
             if (cleanupTmp) {
