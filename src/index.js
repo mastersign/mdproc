@@ -2,265 +2,289 @@
 
 var path = require('path');
 var fs = require('fs');
+var url = require('url');
 var gulp = require('gulp');
+var lazypipe = require('lazypipe');
+var through = require('through2'); 
 var spawn = require('gulp-spawn');
 var exec = require('gulp-exec');
 var rename = require('gulp-rename');
 var del = require('del');
+var tmp = require('tmp');
 var textTransform = require('gulp-text-simple');
 
 var ge = require('mdgraphextract');
 var inliner = require('htinliner');
-var processIncludes = require('mdinclude');
-var processQueries = require('mdquery').transform;
 
-var processStates = require('./states');
-var processReferences = require('./refs');
+var reload = require('./reload');
 var linkext = require('./linkext');
 var pdfLang = require('./pdflang');
 
 var inputFormat = [
-    'markdown',
-    'pipe_tables',
-    'table_captions',
-    'pandoc_title_block',
-    'yaml_metadata_block',
-    'lists_without_preceding_blankline',
-    'abbreviations',
-    'tex_math_dollars',
-    'auto_identifiers',
-    'implicit_header_references',
-    'definition_lists'
+	'markdown',
+	'pipe_tables',
+	'table_captions',
+	'pandoc_title_block',
+	'yaml_metadata_block',
+	'lists_without_preceding_blankline',
+	'abbreviations',
+	'tex_math_dollars',
+	'auto_identifiers',
+	'implicit_header_references',
+	'definition_lists'
 ];
 
 var html5TemplatePath = path.join(path.dirname(module.filename),
-    '../assets/template.standalone.html');
+	'../assets/template.standalone.html');
 var latexTemplatePath = path.join(path.dirname(module.filename),
-    '../assets/template.tex');
+	'../assets/template.tex');
 var texInputsPath = path.join(path.dirname(module.filename),
-    '../assets');
+	'../assets');
 
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
 var identity = function (x) { return x; };
 
 var reloadContents = textTransform(function (content, options) {
-    return fs.readFileSync(options.sourcePath, 'utf-8');
+	return fs.readFileSync(options.sourcePath, 'utf-8');
 });
 
+var runWithTempFiles = function (s, tmpDir, tmpExt, targetExt, commandLine) {
+	var execOptions = {
+		continueOnError: true,
+		pipeStdout: false
+	};
+	return s
+		// unify extension of input file
+		.pipe(rename, { extname: '.' + tmpExt })
+		// write files to temp directory
+		.pipe(gulp.dest, tmpDir)
+		// remove the file extension from the vinyl file
+		.pipe(rename, { extname: '' })
+		// call command line
+		.pipe(exec, commandLine, execOptions)
+		.pipe(exec.reporter)
+		// add the target extension to the vinyl file to match the output
+		.pipe(rename, { extname: '.' + targetExt })
+		// load the content of the target file
+		.pipe(reload);
+};
+
+var makeImagePathsAbsoluteTransform = function (text, opts) {
+	var basePath = path.dirname(opts.sourcePath);
+	return text.replace(/!\[([^\]]*)\]\(([^\)]+)\)/g, function (m, title, href) {
+		if (path.isAbsolute(href) || url.parse(href).protocol) {
+			return m;
+		} else {
+			return '![' + title + '](' + path.join(basePath, href) + ')';
+		}
+	});
+};
+
 var buildFactory = function (targetFormat, targetExt,
-    defImgFormat, defTemplate, defTocDepth, prefixCaption,
-    args, transforms) {
-    'use strict';
+	defImgFormat, defTemplate, defTocDepth, prefixCaption,
+	args, transforms) {
+	'use strict';
 
-    return function (src, dest, opt) {
-        var execOptions; // the options for the exec call
-        var cmdline; // an array with all command line components
-        var imgFormat; // the image format as file extension without period
-        var imgBasePath; // the base path for relative image references
-        var templatePath; // the path to the HTML template
-        var customTransform; // a function taking a string and returning a string
-                             // for custom processing the Markdown text
-        var linkExtTransform; // a function taking a string and returning a string
-                               // for adaptation of hyperlinks to other Markdown documents
-        var tocDepth; // the depth for the table of contents
-        var variables; // an object with additional template variables
-        var tmpExt; // the file name extension for intermediate files
-        var cleanupTmp; // switch to prevent the cleanup of temporary files
-        var contextArgs; // arguments where functions are resolved to values
-        var contextTransforms; // additional transformations for the pipeline
-        var contextify; // function to resolve functional args into values
+	return function (opt) {
+		var cmdline; // an array with all command line components
+		var imgFormat; // the image format as file extension without period
+		var templatePath; // the path to the HTML template
+		var customTransform; // a function taking a string and returning a string
+		                     // for custom processing the Markdown text
+		var linkExtTransform; // a function taking a string and returning a string
+		                      // for adaptation of hyperlinks to other Markdown documents
+		var tocDepth; // the depth for the table of contents
+		var variables; // an object with additional template variables
+		var tmpDir; // the directory for temporary files
+		var tmpExt; // the file name extension for intermediate files
+		var cleanupTmp; // switch to prevent the cleanup of temporary files
+		var contextArgs; // arguments where functions are resolved to values
+		var contextify; // function to resolve functional args into values
 
-        opt = opt || {};
-        imgFormat = opt.imgFormat || defImgFormat;
-        templatePath = opt.template || defTemplate;
-        customTransform = opt.customTransformation || identity;
-        linkExtTransform = opt.adaptMdLinks !== false ?
-            linkext('.md', '.' + targetExt) : identity;
-        tocDepth = opt.tocDepth !== undefined ?
-            opt.tocDepth : defTocDepth;
-        variables = opt.vars || {};
-        tmpExt = targetExt + '_tmp';
-        cleanupTmp = opt.cleanupTempFiles !== false;
-        imgBasePath = opt.imgBasePath || dest;
+		opt = opt || {};
+		imgFormat = opt.imgFormat || defImgFormat;
+		templatePath = opt.template || defTemplate;
+		customTransform = opt.customTransformation || identity;
+		linkExtTransform = opt.adaptMdLinks !== false ?
+			linkext('.md', '.' + targetExt) : identity;
+		tocDepth = opt.tocDepth !== undefined ?
+			opt.tocDepth : defTocDepth;
+		variables = opt.vars || {};
+		tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
+		tmpExt = targetExt + '_tmp';
+		cleanupTmp = opt.cleanupTempFiles !== false;
 
-        contextify = function (value) {
-            if (typeof value === 'function') {
-                return value(src, dest, opt);
-            }
-            return value;
-        };
-        contextArgs = contextify(args);
-        contextTransforms = contextify(transforms);
+		contextify = function (value) {
+			if (typeof value === 'function') {
+				return value(opt);
+			}
+			return value;
+		};
+		contextArgs = contextify(args);
 
-        execOptions = {
-            continueOnError: true,
-            pipeStdout: false
-        };
+		cmdline = [
+			'cd',
+			'"<%= file.cwd %>"',
+			'&&',
+			'pandoc',
+			'--from=' + inputFormat.join('+'),
+			'--to=' + targetFormat,
+			'--default-image-extension=' + imgFormat,
+			'--normalize',
+			'--smart'
+		];
 
-        cmdline = [
-            'cd',
-            '"' + imgBasePath + '"',
-            '&&',
-            'pandoc',
-            '--from=' + inputFormat.join('+'),
-            '--to=' + targetFormat,
-            '--default-image-extension=' + imgFormat,
-            '--normalize',
-            '--smart'
-        ];
+		if (tocDepth) {
+			cmdline.push('--toc');
+			cmdline.push('--toc-depth=' + tocDepth);
+		}
 
-        if (tocDepth) {
-            cmdline.push('--toc');
-            cmdline.push('--toc-depth=' + tocDepth);
-        }
+		if (targetFormat === 'html5') {
+			cmdline.push('--mathml');
+		}
 
-        if (targetFormat === 'html5') {
-            cmdline.push('--mathml');
-        }
+		if (templatePath) {
+			cmdline.push('--template="' + templatePath + '"');
+		}
+		if (contextArgs) {
+			for (var i = 0; i < contextArgs.length; i++) {
+				cmdline.push(contextArgs[i]);
+			}
+		}
 
-        if (templatePath) {
-            cmdline.push('--template="' + templatePath + '"');
-        }
-        if (contextArgs) {
-            for (var i = 0; i < contextArgs.length; i++) {
-                cmdline.push(contextArgs[i]);
-            }
-        }
+		for (var key in variables) {
+			cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
+		}
 
-        for (var key in variables) {
-            cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
-        }
+		cmdline.push('-o');
+		cmdline.push('"<%= file.path %>.' + targetExt + '"');
+		cmdline.push('"<%= file.path %>.' + tmpExt + '"');
 
-        cmdline.push('-o');
-        cmdline.push('"<%= file.path %>.' + targetExt + '"');
-        cmdline.push('"<%= file.path %>.' + tmpExt + '"');
+		var s = lazypipe();
+		s = s.pipe(textTransform(linkExtTransform));
+		
+		if (targetFormat !== 'html5') {
+			s = s.pipe(textTransform(makeImagePathsAbsoluteTransform));
+		}
 
-        return function () {
-            var s = gulp.src(src);
+		s = runWithTempFiles(s, tmpDir.name, tmpExt, targetExt, cmdline.join(' '));
 
-            s = s.pipe(processIncludes());
-            s = s.pipe(processQueries());
-            s = s.pipe(textTransform(customTransform)());
-            s = s.pipe(textTransform(linkExtTransform)());
-            s = s.pipe(processStates());
-            s = s.pipe(processReferences({
-                prefixCaption: prefixCaption,
-                figureTerm: 'Abbildung'
-            }));
+		if (targetFormat === 'html5') {
+			s = s
+				.pipe(inliner, {
+					svgRemoveSize: true,
+					svgWrapElement: 'div',
+					sourcePath: opt.basePath
+				});
+		}
 
-            s = s
-                .pipe(rename({
-                    extname: '.' + tmpExt
-                }))
-                .pipe(gulp.dest(dest))
-                .pipe(rename({
-                    extname: ''
-                }));
+		s = s();
+		if (tmpDir && cleanupTmp) {
+			s.on('end', function () {
+				del.sync(tmpDir.name + '/*', { force: true });
+			});
+		}
 
-            if (contextTransforms) {
-                for (var i = 0; i < contextTransforms.length; i++) {
-                    s = s.pipe(contextTransforms[i]);
-                }
-            }
-
-            s = s
-                .pipe(exec(cmdline.join(' '), execOptions))
-                .pipe(exec.reporter());
-
-            if (targetFormat === 'html5') {
-                s = s
-                    // change the name of the vinyl file from the
-                    // temporary markdown file to the target html file
-                    .pipe(rename({
-                        extname: '.' + targetExt
-                    }))
-                    // load the content of the target files created by pandoc
-                    .pipe(reloadContents())
-                    // inline SVG images, etc.
-                    .pipe(inliner({
-                        svgRemoveSize: true,
-                        svgWrapElement: 'div',
-                        sourcePath: imgBasePath
-                    }))
-                    // override the target files
-                    .pipe(gulp.dest(dest));
-            }
-
-            if (cleanupTmp) {
-                s.on('end', function() {
-                    del.sync(dest + '/**/*.' + tmpExt);
-                });
-            }
-
-            return s;
-        };
-    };
+		return s;
+	};
 };
 
-module.exports.buildHtmlTask = buildFactory(
-    'html5', 'html', 'svg', html5TemplatePath, 2, true);
+module.exports.md2html = buildFactory(
+	'html5', 'html', 'svg', html5TemplatePath, 2, true);
 
-module.exports.buildDocxTask = buildFactory(
-    'docx', 'docx', 'png', null, 2, true);
+module.exports.md2docx = buildFactory(
+	'docx', 'docx', 'png', null, 2, true);
 
-module.exports.buildPdfTask = buildFactory(
-    'latex', 'pdf', 'pdf', latexTemplatePath, 2, false, [
-        '--latex-engine=xelatex',
-        '--variable=documentclass:scrartcl',
-        '--variable=lang:<%= file.pdfLang %>'
-    ], [pdfLang()]);
+module.exports.md2pdf = buildFactory(
+	'latex', 'pdf', 'pdf', latexTemplatePath, 2, false, [
+		'--latex-engine=xelatex',
+		'--variable=documentclass:scrartcl',
+		'--variable=lang:<%= file.pdfLang %>'
+	], [pdfLang()]);
 
-module.exports.buildLaTeXTask = buildFactory(
-    'latex', 'tex', 'pdf', latexTemplatePath, 2, false, [
-        '--variable=documentclass:scrartcl',
-        '--variable=lang:<%= file.pdfLang %>'
-    ], [pdfLang()]);
+module.exports.md2tex = buildFactory(
+	'latex', 'tex', 'pdf', latexTemplatePath, 2, false, [
+		'--variable=documentclass:scrartcl',
+		'--variable=lang:<%= file.pdfLang %>'
+	], [pdfLang()]);
 
-var extractGraph = function (src, dest, opt) {
-    'use strict';
-    var imgFormat; // the image format as file extension without the period
-    var mode; // the extraction mode
-    var imgName; // the image name
-    var attributes; // attribute collection for the commandline
-    var a; // single attribute in iterations
-    var args = []; // the commandline arguments
+var extractGraphFactory = function (graphExtractMode) {
+	'use strict';
 
-    opt = opt || {};
-    imgFormat = opt.imgFormat || 'svg';
-    mode = opt.mode || 'auto';
-    imgName = opt.imgName;
+	return function (opt) {
+		var imgFormat; // the image format as file extension without the period
+		var convertToPdf = false;
+		var mode; // the extraction mode
+		var imgName; // the image name
+		var tmpDir;
+		var attributes; // attribute collection for the commandline
+		var a; // single attribute in iterations
+		var args = []; // the commandline arguments
 
-    args.push('-T' + imgFormat);
+		opt = opt || {};
+		imgFormat = opt.imgFormat || 'svg';
+		if (imgFormat.toLowerCase() === 'pdf') {
+			convertToPdf = true;
+		}
 
-    attributes = opt.graphAttributes || {};
-    for (a in attributes) {
-        args.push('-G' + a + '=' + attributes[a]);
-    }
-    attributes = opt.nodeAttributes || {};
-    for (a in attributes) {
-        args.push('-N' + a + '=' + attributes[a]);
-    }
-    attributes = opt.edgeAttributes || {};
-    for (a in attributes) {
-        args.push('-E' + a + '=' + attributes[a]);
-    }
+		opt.mode = graphExtractMode || 'auto'; 
+		imgName = opt.imgName;
 
-    return function () {
-        return gulp.src(src)
-            .pipe(processIncludes())
-            .pipe(ge(opt))
-            .pipe(spawn({
-                cmd: 'dot',
-                args: args,
-                filename: function (base) {
-                    return imgName ?
-                        imgName + '.' + imgFormat :
-                        base + '_' + mode + '.' + imgFormat;
-                }
-            }))
-            .pipe(gulp.dest(dest));
-    };
+		if (convertToPdf) {
+			imgFormat = 'svg';
+		}
+
+		args.push('-T' + imgFormat);
+
+		attributes = opt.graphAttributes || {};
+		for (a in attributes) {
+			args.push('-G' + a + '=' + attributes[a]);
+		}
+		attributes = opt.nodeAttributes || {};
+		for (a in attributes) {
+			args.push('-N' + a + '=' + attributes[a]);
+		}
+		attributes = opt.edgeAttributes || {};
+		for (a in attributes) {
+			args.push('-E' + a + '=' + attributes[a]);
+		}
+
+		var s = lazypipe();
+		s = s.pipe(textTransform(makeImagePathsAbsoluteTransform));
+		s = s.pipe(ge, opt);
+
+		s = s
+			.pipe(spawn, {
+				cmd: 'dot',
+				args: args,
+				filename: function (base) {
+					return imgName ?
+						imgName + '.' + imgFormat :
+						base + '_' + opt.mode + '.' + imgFormat;
+				}
+			});
+
+		if (convertToPdf) {
+			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
+			s = runWithTempFiles(s, tmpDir.name, 'svg', 'pdf',
+				'inkscape -f "<%= file.path %>.svg" -A "<%= file.path %>.pdf"');
+		}
+
+		s = s();
+
+		if (tmpDir) {
+			s.on('end', function () {
+				del.sync(tmpDir.name + '/*', { force: true });
+			});
+		}
+
+		return s;
+	};
 };
 
-module.exports.extractGraphTask = extractGraph;
+module.exports.autograph = extractGraphFactory('auto');
+module.exports.dotex = extractGraphFactory('dotex');
+
+module.exports.references = textTransform(require('./refs'));
+module.exports.states = textTransform(require('./states'));
