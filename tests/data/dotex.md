@@ -1,4 +1,4 @@
-![DotEx](dotex_dotex)
+![DotEx](images/auto/dotex_dotex)
 
 <!--
 @graph MyGraph: bgcolor=azure

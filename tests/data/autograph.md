@@ -1,4 +1,4 @@
-![AutoGraph](autograph_auto)
+![AutoGraph](images/auto/autograph_auto)
 
 # First Chapter
 Text with an internal link to [Section 1.1] and [Section 1.2].

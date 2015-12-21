@@ -15,14 +15,17 @@
 * With hash, suppress query [index.html#chapter_1](index.md?abc=123#chapter_1)
 * Complex [../sibling/subdir/document.html#ch_1](../sibling/subdir/document.md?abc=1&def=2#ch_1)
 * Empty [](index.md)
+* Recurring implicit [GitHub1]
+* Recurring explicit [GitHub][GitHub2]
 
 ## Negatives
 
-![Image](picture.png)
-
-![Quirky](picture.md)
+![Image](images/picture.png)
 
 * Other Extension [Document](doc.pdf)
 * Absolute [URL](https://github.com/mastersign/mddata/blob/master/README.md)
 * Empty [Empty]()
 * With spaces in URL [Spaces](my document.md)
+
+[GitHub1]: http://www.github.com
+[GitHub2]: https://github.com/ "With a nice title."

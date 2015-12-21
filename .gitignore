@@ -3,3 +3,4 @@
 /tmp
 *.sublime-workspace
 /tests/tmp
+/tests/data/images/auto
