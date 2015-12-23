@@ -1,4 +1,5 @@
 /* globals require */
+'use strict';
 
 var gulp = require('gulp');
 var del = require('del');
@@ -7,7 +8,7 @@ var mdproc = require('../src/index');
 
 gulp.task('clean', function (cb) {
 	del(['tmp/**', 'data/images/auto/*'], cb);
-})
+});
 
 gulp.task('includes', function () {
 	return gulp.src('data/includes.md')
@@ -39,7 +40,7 @@ gulp.task('autograph:complex', function () {
 gulp.task('copy-images', function () {
 	return gulp.src('data/images/**')
 		.pipe(gulp.dest('tmp/images'));
-})
+});
 
 gulp.task('complex', ['autograph:complex', 'copy-images'], function () {
 	return gulp.src('data/complex.md')
