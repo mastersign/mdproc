@@ -1,11 +1,9 @@
 /* global module, require, process */
 
 var path = require('path');
-var fs = require('fs');
 var url = require('url');
 var gulp = require('gulp');
 var lazypipe = require('lazypipe');
-var through = require('through2'); 
 var spawn = require('gulp-spawn');
 var exec = require('gulp-exec');
 var rename = require('gulp-rename');
@@ -43,13 +41,15 @@ var texInputsPath = path.join(path.dirname(module.filename),
 
 process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
 
-var identity = function (x) { return x; };
+var identity = function (x) {
+	'use strict';
 
-var reloadContents = textTransform(function (content, options) {
-	return fs.readFileSync(options.sourcePath, 'utf-8');
-});
+	return x;
+};
 
 var runWithTempFiles = function (s, tmpDir, tmpExt, targetExt, commandLine) {
+	'use strict';
+
 	var execOptions = {
 		continueOnError: true,
 		pipeStdout: false
@@ -71,6 +71,7 @@ var runWithTempFiles = function (s, tmpDir, tmpExt, targetExt, commandLine) {
 };
 
 var makeImagePathsAbsoluteTransform = function (text, opts) {
+	'use strict';
 	var basePath = path.dirname(opts.sourcePath);
 	return text.replace(/!\[([^\]]*)\]\(([^\)]+)\)/g, function (m, title, href) {
 		if (path.isAbsolute(href) || url.parse(href).protocol) {
@@ -83,15 +84,13 @@ var makeImagePathsAbsoluteTransform = function (text, opts) {
 
 var buildFactory = function (targetFormat, targetExt,
 	defImgFormat, defTemplate, defTocDepth, prefixCaption,
-	args, transforms) {
+	args) {
 	'use strict';
 
 	return function (opt) {
 		var cmdline; // an array with all command line components
 		var imgFormat; // the image format as file extension without period
 		var templatePath; // the path to the HTML template
-		var customTransform; // a function taking a string and returning a string
-		                     // for custom processing the Markdown text
 		var linkExtTransform; // a function taking a string and returning a string
 		                      // for adaptation of hyperlinks to other Markdown documents
 		var tocDepth; // the depth for the table of contents
@@ -105,7 +104,6 @@ var buildFactory = function (targetFormat, targetExt,
 		opt = opt || {};
 		imgFormat = opt.imgFormat || defImgFormat;
 		templatePath = opt.template || defTemplate;
-		customTransform = opt.customTransformation || identity;
 		linkExtTransform = opt.adaptMdLinks !== false ?
 			linkext('.md', '.' + targetExt) : identity;
 		tocDepth = opt.tocDepth !== undefined ?
@@ -163,7 +161,7 @@ var buildFactory = function (targetFormat, targetExt,
 
 		var s = lazypipe();
 		s = s.pipe(textTransform(linkExtTransform));
-		
+
 		if (targetFormat !== 'html5') {
 			s = s.pipe(textTransform(makeImagePathsAbsoluteTransform));
 		}
@@ -215,7 +213,6 @@ var extractGraphFactory = function (graphExtractMode) {
 	return function (opt) {
 		var imgFormat; // the image format as file extension without the period
 		var convertToPdf = false;
-		var mode; // the extraction mode
 		var imgName; // the image name
 		var tmpDir;
 		var attributes; // attribute collection for the commandline
@@ -228,7 +225,7 @@ var extractGraphFactory = function (graphExtractMode) {
 			convertToPdf = true;
 		}
 
-		opt.mode = graphExtractMode || 'auto'; 
+		opt.mode = graphExtractMode || 'auto';
 		imgName = opt.imgName;
 
 		if (convertToPdf) {
