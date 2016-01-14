@@ -1,6 +1,5 @@
 {
   "name": "mdproc",
-  "version": "0.1.23",
   "homepage": "https://github.com/mastersign/mdproc",
   "authors": [
     "Tobias Kiertscher <dev@mastersign.de>"
@@ -25,6 +24,6 @@
     "tests"
   ],
   "dependencies": {
-    "h5smpl": "mastersign/h5smpl"
+    "h5smpl": "^0.2.1"
   }
 }
