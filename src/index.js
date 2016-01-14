@@ -32,10 +32,17 @@ var inputFormat = [
 	'definition_lists'
 ];
 
-var html5TemplatePath = path.join(path.dirname(module.filename),
-	'../assets/template.standalone.html');
-var latexTemplatePath = path.join(path.dirname(module.filename),
-	'../assets/template.tex');
+var html5TemplateFinder = function (theme) {
+	'use strict';
+	theme = theme || 'default';
+	return path.join(path.dirname(module.filename),
+		'..', 'assets', 'template.' + theme + '.html');
+};
+var latexTemplateFinder = function () {
+	'use strict';
+	return path.join(path.dirname(module.filename),
+		'../assets/template.tex');
+};
 var texInputsPath = path.join(path.dirname(module.filename),
 	'../assets');
 
@@ -83,13 +90,14 @@ var makeImagePathsAbsoluteTransform = function (text, opts) {
 };
 
 var buildFactory = function (targetFormat, targetExt,
-	defImgFormat, defTemplate, defTocDepth, prefixCaption,
+	defImgFormat, templateFinder, defTocDepth, prefixCaption,
 	args) {
 	'use strict';
 
 	return function (opt) {
 		var cmdline; // an array with all command line components
 		var imgFormat; // the image format as file extension without period
+		var theme; // the template theme
 		var templatePath; // the path to the HTML template
 		var linkExtTransform; // a function taking a string and returning a string
 		                      // for adaptation of hyperlinks to other Markdown documents
@@ -103,7 +111,11 @@ var buildFactory = function (targetFormat, targetExt,
 
 		opt = opt || {};
 		imgFormat = opt.imgFormat || defImgFormat;
-		templatePath = opt.template || defTemplate;
+		theme = opt.theme || 'default';
+		templatePath = opt.template;
+		if (!templatePath && typeof(templateFinder) === 'function') {
+			templatePath = templateFinder(theme);
+		}
 		linkExtTransform = opt.adaptMdLinks !== false ?
 			linkext('.md', '.' + targetExt) : identity;
 		tocDepth = opt.tocDepth !== undefined ?
@@ -189,20 +201,20 @@ var buildFactory = function (targetFormat, targetExt,
 };
 
 module.exports.md2html = buildFactory(
-	'html5', 'html', 'svg', html5TemplatePath, 2, true);
+	'html5', 'html', 'svg', html5TemplateFinder, 2, true);
 
 module.exports.md2docx = buildFactory(
 	'docx', 'docx', 'png', null, 2, true);
 
 module.exports.md2pdf = buildFactory(
-	'latex', 'pdf', 'pdf', latexTemplatePath, 2, false, [
+	'latex', 'pdf', 'pdf', latexTemplateFinder, 2, false, [
 		'--latex-engine=xelatex',
 		'--variable=documentclass:scrartcl',
 		'--variable=lang:<%= file.pdfLang %>'
 	], [pdfLang()]);
 
 module.exports.md2tex = buildFactory(
-	'latex', 'tex', 'pdf', latexTemplatePath, 2, false, [
+	'latex', 'tex', 'pdf', latexTemplateFinder, 2, false, [
 		'--variable=documentclass:scrartcl',
 		'--variable=lang:<%= file.pdfLang %>'
 	], [pdfLang()]);

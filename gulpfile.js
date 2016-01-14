@@ -2,19 +2,38 @@
 
 var path = require('path');
 var del = require('del');
+var glob = require('glob');
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
-var minifyCss = require('gulp-minify-css');
+var cssNano = require('gulp-cssnano');
 var less = require('gulp-less');
+var textTransformation = require('gulp-text-simple');
 var htinliner = require('htinliner');
 
 var bowerDir = './bower_components/';
 var tempDir = './tmp/';
+var styleSourcePattern = path.join(bowerDir, 'h5smpl', 'dist', 'css', 'style.*.mini.css');
 
-gulp.task('clean', function (cb) {
+var extractStyleFromFilename = function (fileName) {
     'use strict';
-    del([tempDir + '**'], cb);
+    return fileName.replace(/^.*\.([^\.]*?)\.mini\.css$/, '$1');
+};
+
+var findStyles = function () {
+    'use strict';
+    return glob.sync(styleSourcePattern)
+        .map(extractStyleFromFilename);
+};
+
+var setTemplateStyle = function (html, opts) {
+    'use strict';
+    return html.replace('style.default.css', 'style.' + opts.style + '.mini.css');
+};
+
+gulp.task('clean', function () {
+    'use strict';
+    return del([tempDir + '**']);
 });
 
 gulp.task('copy_template', function () {
@@ -23,27 +42,37 @@ gulp.task('copy_template', function () {
         .pipe(gulp.dest(tempDir));
 });
 
-gulp.task('minify_styles', function () {
+gulp.task('copy_h5smpl_styles', function () {
     'use strict';
-    return merge(
-        gulp.src(path.join(bowerDir, 'h5smpl/css', '*.css'))
-            .pipe(minifyCss())
-            .pipe(gulp.dest(path.join(tempDir, 'css/'))),
-        gulp.src('./src/*.less')
-            .pipe(less())
-            .pipe(minifyCss())
-            .pipe(gulp.dest(path.join(tempDir, 'css/')))
-    );
+    return gulp.src(styleSourcePattern)
+        .pipe(gulp.dest(path.join(tempDir, 'css/')));
 });
 
-gulp.task('build_html_template',
-    ['copy_template', 'minify_styles'],
-    function () {
-        'use strict';
+gulp.task('compile_mdproc_styles', function () {
+    'use strict';
+    return gulp.src('./src/*.less')
+        .pipe(less())
+        .pipe(cssNano())
+        .pipe(gulp.dest(path.join(tempDir, 'css/')));
+});
+
+gulp.task('preparations', ['copy_template', 'compile_mdproc_styles', 'copy_h5smpl_styles']);
+
+gulp.task('build_html_template', ['preparations'], function () {
+    'use strict';
+    return merge(findStyles().map(function (style) {
+        var styleSetter = textTransformation(setTemplateStyle, { style: style });
         return gulp.src('template.html', { cwd: tempDir })
+            .pipe(styleSetter())
             .pipe(htinliner())
-            .pipe(rename('template.standalone.html'))
+            .pipe(rename('template.' + style + '.html'))
             .pipe(gulp.dest('assets/'));
-    });
+    }));
+});
+
+gulp.task('test', function (cb) {
+    
+    cb();
+});
 
 gulp.task('default', ['build_html_template']);

@@ -93,7 +93,7 @@ gulp.task('md2html', ['dotex_svg', 'autograph_svg', 'copy-images'], function () 
 		.pipe(mdinclude())
 		.pipe(mdproc.states())
 		.pipe(mdproc.references({ prefixCaption: true }))
-		.pipe(mdproc.md2html({ basePath: 'data' }))
+		.pipe(mdproc.md2html({ basePath: 'data', theme: 'metro' }))
 		.pipe(gulp.dest('tmp'));
 });
 

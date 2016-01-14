@@ -1,36 +1,3 @@
-.border-radius(@radius) {
-  -webkit-border-radius: @radius;
-	 -moz-border-radius: @radius;
-		  border-radius: @radius;
-}
-
-@statesForeground: #ffffff;
-@statesDefault: #a0a0a0;
-@statesOpen: #1ba1e2;
-@statesInProgress: #fa6800;
-@statesClosed: #60a917;
-
-.state {
-	display: inline-block;
-	background-color: @statesDefault;
-	font-weight: bold;
-	font-size: 0.8em;
-	color: @statesForeground;
-	padding: 0.1em 0.75em 0.2em 0.75em;
-}
-
-.state.open {
-	background-color: @statesOpen;
-}
-
-.state.in-progress {
-	background-color: @statesInProgress;
-}
-
-.state.closed {
-	background-color: @statesClosed;
-}
-
 .htinliner {
 	display: block;
 
@@ -46,61 +13,12 @@ header {
 	h1#title {
 		font-size: 3.0em;
 		margin-top: 0.25em;
-		font-weight: 200;
 	}
 
 	h1#subtitle {
 		margin-top: 0.5em;
 		font-size: 1.6em;
 	}
-}
-
-nav.vertical li {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-
-	@media screen and (max-width: 720px), screen and (max-device-height: 720px) and (orientation: landscape) {
-		overflow: auto;
-		white-space: normal;
-	}
-}
-
-h1, h2, h3, h4 {
-	font-family: "Segoe UI", "Helvetica", sans-serif;
-	font-weight: 300;
-	line-height: 1.5em;
-}
-
-abbr, address, article, aside, audio, b, blockquote, 
-body, canvas, caption, cite, dd, del, details, 
-dfn, div, dl, dt, em, fieldset, figcaption, figure, footer, 
-form, h5, h6, header, hgroup, html, i, iframe, img, ins, 
-kbd, label, legend, li, mark, menu, nav, object, ol, 
-p, pre, q, samp, section, small, span, strong, sub, 
-summary, sup, table, tbody, td, tfoot, th, thead, time, 
-tr, ul, var, video {
-	font-family: "Segoe UI", "Helvetica", sans-serif;
-	font-weight: 500;
-	line-height: 1.4em;
-}
-
-pre {
-	line-height: 1.2em;
-}
-
-a {
-	color: #46C;
-}
-a:visited {
-	color: #458;
-}
-a:hover {
-	color: #084;
-}
-
-strong, b {
-	font-weight: 700;
 }
 
 figure img {
@@ -110,15 +28,11 @@ figure img {
 	max-width: 100%;
 }
 
-li p:first-of-type {
-	margin-top: 0;
-}
-
 #preface {
 	.item {
-	   margin: 0.5em 0;
+		margin: 0.5em 0;
 
-	   .label {
+		.label {
 			font-weight: 500;
 			display: block;
 			float: left;
@@ -138,7 +52,7 @@ li p:first-of-type {
 			margin-left: 7em;
 			clear: both;
 			font-style: italic;
-			color: #888;
+			color: rgba(127, 127, 127, 127);
 		}
 	}
 }
