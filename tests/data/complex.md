@@ -17,14 +17,17 @@ It will pe brought to its shiny glory by [Gulp].
 * [Images]
 
 # Text Include { #inc:text }
+<!-- #state open -->
 
 <!-- #include includes/simple.inc.md -->
 
 # CSV Include
+<!-- #state in-progress -->
 
 <!-- #csv includes/table.csv -->
 
 # Images
+<!-- #state closed -->
 
 * [#img:auto]
 * [#img:png]
