@@ -31,6 +31,11 @@ var setTemplateStyle = function (html, opts) {
     return html.replace('style.default.css', 'style.' + opts.style + '.mini.css');
 };
 
+var insertLangAttribute = function (html) {
+    'use strict';
+    return html.replace('<html>', '<html$if(lang)$ lang="$lang$"$endif$>');
+};
+
 gulp.task('clean', function () {
     'use strict';
     return del([tempDir + '**']);
@@ -62,17 +67,14 @@ gulp.task('build_html_template', ['preparations'], function () {
     'use strict';
     return merge(findStyles().map(function (style) {
         var styleSetter = textTransformation(setTemplateStyle, { style: style });
+        var langInserter = textTransformation(insertLangAttribute);
         return gulp.src('template.html', { cwd: tempDir })
             .pipe(styleSetter())
             .pipe(htinliner())
+            .pipe(langInserter())
             .pipe(rename('template.' + style + '.html'))
             .pipe(gulp.dest('assets/'));
     }));
-});
-
-gulp.task('test', function (cb) {
-    
-    cb();
 });
 
 gulp.task('default', ['build_html_template']);
