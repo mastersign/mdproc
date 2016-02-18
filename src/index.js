@@ -46,7 +46,7 @@ var latexTemplateFinder = function () {
 var texInputsPath = path.join(path.dirname(module.filename),
 	'../assets');
 
-process.env.TEXINPUTS = texInputsPath + path.delimiter + process.env.TEXINPUTS;
+process.env.TEXINPUTS = texInputsPath + path.delimiter + (process.env.TEXINPUTS || '');
 
 var identity = function (x) {
 	'use strict';
