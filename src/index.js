@@ -184,6 +184,7 @@ var buildFactory = function (targetFormat, targetExt,
 			s = s
 				.pipe(inliner, {
 					svgRemoveSize: true,
+					svgLimitSize: true,
 					svgWrapElement: 'div',
 					sourcePath: opt.basePath
 				});
