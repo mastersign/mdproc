@@ -226,6 +226,7 @@ var extractGraphFactory = function (graphExtractMode) {
 	return function (opt) {
 		var imgFormat; // the image format as file extension without the period
 		var convertToPdf = false;
+		var convertToPng = false;
 		var imgName; // the image name
 		var tmpDir;
 		var attributes; // attribute collection for the commandline
@@ -233,17 +234,18 @@ var extractGraphFactory = function (graphExtractMode) {
 		var args = []; // the commandline arguments
 
 		opt = opt || {};
-		imgFormat = opt.imgFormat || 'svg';
-		if (imgFormat.toLowerCase() === 'pdf') {
+		imgFormat = (opt.imgFormat || 'svg').toLowerCase();
+		if (imgFormat === 'pdf') {
 			convertToPdf = true;
+			imgFormat = 'svg';
+		}
+		if (imgFormat === 'png') {
+			convertToPng = true;
+			imgFormat = 'svg';
 		}
 
 		opt.mode = graphExtractMode || 'auto';
 		imgName = opt.imgName;
-
-		if (convertToPdf) {
-			imgFormat = 'svg';
-		}
 
 		args.push('-T' + imgFormat);
 
@@ -279,6 +281,11 @@ var extractGraphFactory = function (graphExtractMode) {
 			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
 			s = runWithTempFiles(s, tmpDir.name, 'svg', 'pdf',
 				'inkscape -f "<%= file.path %>.svg" -A "<%= file.path %>.pdf"');
+		}
+		if (convertToPng) {
+			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
+			s = runWithTempFiles(s, tmpDir.name, 'svg', 'png',
+				'inkscape -f "<%= file.path %>.svg" -e "<%= file.path %>.png" -d 300');
 		}
 
 		s = s();
