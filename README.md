@@ -1,6 +1,7 @@
 # MdProc
 
 [![npm package][npm-img]][npm-url]
+[![dependency status][libraries-img]][libraries-url]
 
 > Extended [Markdown][] pre- and post-processing based on [Pandoc][], [Graphviz][] and others.
 
@@ -29,6 +30,8 @@ _MdProc_ is published under the MIT license.
 
 [npm-url]: https://www.npmjs.com/package/mdproc
 [npm-img]: https://img.shields.io/npm/v/mdproc.svg
+[libraries-url]: https://libraries.io/npm/mdproc
+[libraries-img]: https://img.shields.io/librariesio/github/mastersign/mdproc.svg
 [Markdown]: https://daringfireball.net/projects/markdown/
 [Graphviz]: http://www.graphviz.org/
 [Pandoc]: http://pandoc.org/
