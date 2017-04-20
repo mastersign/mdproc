@@ -27,24 +27,24 @@
   "dependencies": {
     "del": "^2.0.0",
     "gulp-exec": "^2.0.0",
-    "gulp-jslint": "^0.2.0",
+    "gulp-jslint": "^1.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-spawn": "^0.3.0",
-    "gulp-text-simple": "^0.3.0",
-    "htinliner": "^0.3.0",
-    "js-yaml": "^3.0.0",
+    "gulp-text-simple": "^0.4.1",
+    "htinliner": "^0.3.1",
+    "js-yaml": "^3.8.0",
     "lazypipe": "^1.0.0",
-    "lodash": "^3.0.0",
-    "mdgraphextract": "^0.1.14",
+    "lodash": "^4.17.0",
+    "mdgraphextract": "^0.1.17",
     "merge-stream": "^1.0.0",
     "through2": "^2.0.0",
-    "tmp": "0.0.28"
+    "tmp": "0.0.31"
   },
   "devDependencies": {
-    "glob": "^6.0.4",
+    "glob": "^7.0.4",
     "gulp": "^3.9.0",
     "gulp-cssnano": "^2.1.0",
-    "gulp-less": "^3.0.0",
-    "mdinclude": "^0.5.0"
+    "gulp-less": "^3.3.0",
+    "mdinclude": "^0.5.1"
   }
 }
