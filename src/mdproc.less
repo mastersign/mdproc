@@ -28,6 +28,22 @@ figure img {
 	max-width: 100%;
 }
 
+#frame.no-toc {
+
+	@media screen and (min-width: 960px) {
+		width: 80%;
+	}
+
+	header {
+		margin-left: .5em;
+		padding-left: 1em;
+	}
+
+	#page {
+		margin: 1em .5em;
+	}
+}
+
 #preface {
 	.item {
 		margin: 0.5em 0;
@@ -54,5 +70,24 @@ figure img {
 			font-style: italic;
 			color: rgba(127, 127, 127, 127);
 		}
+	}
+}
+
+#abstract {
+	font-size: .9em;
+	font-weight: 600;
+	margin: 2em 0;
+	padding: 0;
+	@media screen and (min-width: 960px) {
+		padding: 0 25% 0 0;
+	}
+}
+
+#frame.no-toc #abstract {
+	@media screen and (min-width: 720px) {
+		padding: 0 4em;
+	}
+	@media screen and (min-width: 960px) {
+		padding: 0 12em;
 	}
 }

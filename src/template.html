@@ -13,7 +13,7 @@
     $header-includes$
 </head>
 <body>
-<div id="frame">
+<div id="frame"$if(toc)$$else$ class="no-toc"$endif$>
     <header>
         $include-before$
         <h1 id="title">$title$</h1>
@@ -47,7 +47,12 @@
                 <span class="text">$version$</span>
             </div>$endif$
         </div>
-    	$body$
+        $if(abstract)$
+        <div id="abstract">
+            $abstract$
+        </div>
+        $endif$
+        $body$
     </div>
     $if(include-after)$<footer>
         $include-after$
