@@ -1,4 +1,8 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+$if(page-geometry)$
+\usepackage{geometry}
+\geometry{$if(papersize)$$papersize$, $endif$left=$page-geometry.left$, top=$page-geometry.top$, right=$page-geometry.right$, bottom=$page-geometry.bottom$, includehead, includefoot$if(page-geometry.twoside)$, twoside$endif$}
+$endif$
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
@@ -124,6 +128,13 @@ $if(numbersections)$
 $else$
 \setcounter{secnumdepth}{0}
 $endif$
+$if(page-header)$
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\headheight 10pt
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+$endif$
 $if(verbatim-in-note)$
 \VerbatimFootnotes % allows verbatim text in footnotes
 $endif$
@@ -169,8 +180,9 @@ $endfor$
 \end{tabular} \end{center}
 
 $if(abstract)$
+\medskip
 \begin{abstract}
-$abstract$
+\noindent $abstract$
 \end{abstract}
 $endif$
 
@@ -178,16 +190,21 @@ $for(include-before)$
 $include-before$
 
 $endfor$
+
 $if(toc)$
-\pagebreak
+$if(long-toc)$\pagebreak$endif$
 {
 \hypersetup{linkcolor=black}
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
 }
-\pagebreak
+$if(long-toc)$\pagebreak$else$\bigskip\bigskip$endif$
+$else$
+\bigskip
 $endif$
 $body$
+
+$toc$
 
 $if(natbib)$
 $if(biblio-files)$
