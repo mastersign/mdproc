@@ -124,13 +124,6 @@ $if(numbersections)$
 $else$
 \setcounter{secnumdepth}{0}
 $endif$
-$if(page-header)$
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\headheight 10pt
-\renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\footrulewidth}{0.5pt}
-$endif$
 $if(verbatim-in-note)$
 \VerbatimFootnotes % allows verbatim text in footnotes
 $endif$
@@ -154,6 +147,13 @@ $endif$
 $for(header-includes)$
 $header-includes$
 $endfor$
+
+$if(fancy-headline)$
+\usepackage{fancyhdr}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\pagestyle{fancy}
+$endif$
 
 \begin{document}
 $if(title)$
