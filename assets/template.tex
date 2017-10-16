@@ -152,7 +152,7 @@ $if(fancy-headline)$
 \usepackage{fancyhdr}
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\footrulewidth}{0.5pt}
-\pagestyle{fancy}
+\pagestyle{plain}
 $endif$
 
 \begin{document}
@@ -197,6 +197,7 @@ $if(long-toc)$\pagebreak$else$\bigskip\bigskip$endif$
 $else$
 \bigskip
 $endif$
+$if(fancy-headline)$\pagestyle{fancy}$endif$
 
 $body$
 
