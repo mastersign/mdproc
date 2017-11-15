@@ -24,6 +24,6 @@
     "tests"
   ],
   "dependencies": {
-    "h5smpl": "^0.2.1"
+    "h5smpl": "0.2.4"
   }
 }
