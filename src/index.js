@@ -91,7 +91,7 @@ var makeImagePathsAbsoluteTransform = function (text, opts) {
 
 var buildFactory = function (targetFormat, targetExt,
 	defImgFormat, templateFinder, defTocDepth, prefixCaption,
-	args) {
+	args, pipeSteps) {
 	'use strict';
 
 	return function (opt) {
@@ -172,6 +172,11 @@ var buildFactory = function (targetFormat, targetExt,
 		cmdline.push('"<%= file.path %>.' + tmpExt + '"');
 
 		var s = lazypipe();
+		if (pipeSteps) {
+			pipeSteps.forEach(function (step) {
+				s = s.pipe(step);
+			});
+		}
 		s = s.pipe(textTransform(linkExtTransform));
 
 		if (targetFormat !== 'html5') {
@@ -212,13 +217,13 @@ module.exports.md2pdf = buildFactory(
 		'--latex-engine=xelatex',
 		'--variable=documentclass:scrartcl',
 		'--variable=lang:<%= file.pdfLang %>'
-	], [pdfLang()]);
+	], [pdfLang]);
 
 module.exports.md2tex = buildFactory(
 	'latex', 'tex', 'pdf', latexTemplateFinder, 2, false, [
 		'--variable=documentclass:scrartcl',
 		'--variable=lang:<%= file.pdfLang %>'
-	], [pdfLang()]);
+	], [pdfLang]);
 
 var extractGraphFactory = function (graphExtractMode) {
 	'use strict';
