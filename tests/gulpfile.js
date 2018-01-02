@@ -106,6 +106,15 @@ gulp.task('md2docx', ['dotex_png', 'autograph_png'], function () {
 		.pipe(gulp.dest('tmp'));
 });
 
+gulp.task('md2tex', ['dotex_pdf', 'autograph_pdf'], function () {
+	return gulp.src('data/*.md')
+		.pipe(mdinclude())
+		.pipe(mdproc.states())
+		.pipe(mdproc.references())
+		.pipe(mdproc.md2tex())
+		.pipe(gulp.dest('tmp'));
+});
+
 gulp.task('md2pdf', ['dotex_pdf', 'autograph_pdf'], function () {
 	return gulp.src('data/*.md')
 		.pipe(mdinclude())
