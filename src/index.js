@@ -216,13 +216,13 @@ module.exports.md2pdf = buildFactory(
 	'latex', 'pdf', 'pdf', latexTemplateFinder, 2, false, [
 		'--latex-engine=xelatex',
 		'--variable=documentclass:scrartcl',
-		'--variable=lang:<%= file.pdfLang %>'
+		'--variable=pdflang:<%= file.pdfLang %>'
 	], [pdfLang]);
 
 module.exports.md2tex = buildFactory(
 	'latex', 'tex', 'pdf', latexTemplateFinder, 2, false, [
 		'--variable=documentclass:scrartcl',
-		'--variable=lang:<%= file.pdfLang %>'
+		'--variable=pdflang:<%= file.pdfLang %>'
 	], [pdfLang]);
 
 var extractGraphFactory = function (graphExtractMode) {
