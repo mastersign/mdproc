@@ -67,6 +67,7 @@ var langs = {
 
 var toPdfLang = function (lang) {
     'use strict';
+    lang = lang ? lang : defLang;
     lang = lang.slice(0, 2);
     return langs[lang] || langs[defLang];
 };
