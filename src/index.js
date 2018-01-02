@@ -20,6 +20,7 @@ var pdfLang = require('./pdflang');
 
 var inputFormat = [
 	'markdown',
+	'smart',
 	'pipe_tables',
 	'table_captions',
 	'pandoc_title_block',
@@ -140,9 +141,7 @@ var buildFactory = function (targetFormat, targetExt,
 			'pandoc',
 			'--from=' + inputFormat.join('+'),
 			'--to=' + targetFormat,
-			'--default-image-extension=' + imgFormat,
-			'--normalize',
-			'--smart'
+			'--default-image-extension=' + imgFormat
 		];
 
 		if (tocDepth) {
@@ -214,7 +213,7 @@ module.exports.md2docx = buildFactory(
 
 module.exports.md2pdf = buildFactory(
 	'latex', 'pdf', 'pdf', latexTemplateFinder, 2, false, [
-		'--latex-engine=xelatex',
+		'--pdf-engine=xelatex',
 		'--variable=documentclass:scrartcl',
 		'--variable=pdflang:<%= file.pdfLang %>'
 	], [pdfLang]);

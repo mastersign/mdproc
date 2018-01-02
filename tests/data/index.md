@@ -1,10 +1,10 @@
 ---
-title: Vorgangsbegleiter
+title: Beispielprojekt
 author: Tobias Kiertscher
 creator:
 - role: Autor
   name: Tobias Kiertscher
-  email: tkiertscher@ifg.cc
+  email: dev@mastersign.de
 lang: de
 ...
 

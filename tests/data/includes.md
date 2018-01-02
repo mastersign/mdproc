@@ -1,3 +1,7 @@
+---
+title: Includes
+...
+
 # Master
 
 ## First Include

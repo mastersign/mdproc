@@ -1,9 +1,11 @@
-# CSV-Include
+---
+title: CSV-Include
+...
 
-## Table
+# Table
 
 <!-- #csv includes/table.csv -->
 
-## Repeated table
+# Repeated table
 
 <!-- #csv includes/table.csv -->

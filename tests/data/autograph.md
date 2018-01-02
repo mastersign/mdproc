@@ -1,3 +1,7 @@
+---
+title: Autograph
+...
+
 ![AutoGraph](images/auto/autograph_auto)
 
 # First Chapter

@@ -1,12 +1,11 @@
-
 ---
-title: Vorgangsbegleiter
+title: Beispielprojekt
 subtitle: Product Backlog
 author: Tobias Kiertscher
 creator:
 - role: Autor
   name: Tobias Kiertscher
-  email: tkiertscher@ifg.cc
+  email: dev@mastersign.de
 date: 21.08.2014
 lang: de
 ...

@@ -1,3 +1,7 @@
+---
+title: DotEx
+...
+
 ![DotEx](images/auto/dotex_dotex)
 
 <!--
