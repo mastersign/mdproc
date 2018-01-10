@@ -18,9 +18,26 @@ var badge = function (typ) {
 
 module.exports = function (text) {
 	'use strict';
-	return text.replace(/<!--\s+#state\s+(\S+)\s+-->/g,
+
+	/*
+	 * States to Badges
+	 */
+	text = text.replace(/<!--\s+#state\s+(\S+)\s+-->/g,
 		function (m, state) {
-			return badge(mapping[state] || { style: 'default', content: state });
+			var typ = mapping[state] || { style: 'default', content: state };
+			return '<!-- #badge ' + typ.style + ' ' + typ.content + ' -->';
 		}
 	);
+
+	/*
+	 * Badges to HTML
+	 */
+	text = text.replace(
+		/((?:\r?\n)(?:\r?\n)+)<!--\s+#badge\s+(\S+)\s+(.+?)\s+-->((?:\r?\n)(?:\r?\n)+)/g,
+		'$1<div class="badge $2">$3</div>$4');
+	text = text.replace(
+		/<!--\s+#badge\s+(\S+)\s+(.+?)\s+-->/g,
+		'<span class="badge $1">$2</span>');
+
+	return text;
 };

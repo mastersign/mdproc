@@ -308,4 +308,4 @@ module.exports.autograph = extractGraphFactory('auto');
 module.exports.dotex = extractGraphFactory('dotex');
 
 module.exports.references = textTransform(require('./refs'));
-module.exports.states = textTransform(require('./states'));
+module.exports.badges = textTransform(require('./badges'));
