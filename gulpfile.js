@@ -11,9 +11,9 @@ var less = require('gulp-less');
 var textTransformation = require('gulp-text-simple');
 var htinliner = require('htinliner');
 
-var bowerDir = './bower_components/';
+var h5smplDir = './node_modules/h5smpl/';
 var tempDir = './tmp/';
-var styleSourcePattern = path.join(bowerDir, 'h5smpl', 'dist', 'css', 'style.*.mini.css');
+var styleSourcePattern = path.join(h5smplDir, 'dist', 'css', 'style.*.mini.css');
 
 var extractStyleFromFilename = function (fileName) {
     'use strict';
