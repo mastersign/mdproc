@@ -21,6 +21,10 @@
   },
   "homepage": "https://github.com/mastersign/mdproc",
   "main": "./src/index.js",
+  "files": [
+    "assets/",
+    "src/*.js"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
