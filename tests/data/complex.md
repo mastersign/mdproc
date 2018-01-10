@@ -8,7 +8,10 @@ lang: en
 # Introduction
 
 This document is a more complex example of all things working together.
-It will pe brought to its shiny glory by [Gulp].
+
+::: {.badge .passive}
+It will pe brought to its _shiny_ **glory** by [Gulp].
+:::
 
 ![#img:autograph Autograph Image](images/auto/complex_auto)
 
@@ -22,12 +25,13 @@ It will pe brought to its shiny glory by [Gulp].
 <!-- #include includes/simple.inc.md -->
 
 # CSV Include
-<!-- #state in-progress -->
+[In Progress]{.badge .highlight}
 
 <!-- #csv includes/table.csv -->
 
 # Images
-<!-- #state closed -->
+
+<!-- #badge warning Unfinished! -->
 
 * [#img:auto]
 * [#img:png]
