@@ -91,7 +91,7 @@ gulp.task('autograph_pdf', function () {
 gulp.task('md2html', ['dotex_svg', 'autograph_svg', 'copy-images'], function () {
 	return gulp.src('data/*.md')
 		.pipe(mdinclude())
-		.pipe(mdproc.states())
+		.pipe(mdproc.badges())
 		.pipe(mdproc.references({ prefixCaption: true }))
 		.pipe(mdproc.md2html({ basePath: 'data', theme: 'metro' }))
 		.pipe(gulp.dest('tmp'));
@@ -100,7 +100,7 @@ gulp.task('md2html', ['dotex_svg', 'autograph_svg', 'copy-images'], function () 
 gulp.task('md2docx', ['dotex_png', 'autograph_png'], function () {
 	return gulp.src('data/*.md')
 		.pipe(mdinclude())
-		.pipe(mdproc.states())
+		.pipe(mdproc.badges())
 		.pipe(mdproc.references())
 		.pipe(mdproc.md2docx())
 		.pipe(gulp.dest('tmp'));
@@ -109,7 +109,7 @@ gulp.task('md2docx', ['dotex_png', 'autograph_png'], function () {
 gulp.task('md2tex', ['dotex_pdf', 'autograph_pdf'], function () {
 	return gulp.src('data/*.md')
 		.pipe(mdinclude())
-		.pipe(mdproc.states())
+		.pipe(mdproc.badges())
 		.pipe(mdproc.references())
 		.pipe(mdproc.md2tex())
 		.pipe(gulp.dest('tmp'));
@@ -118,7 +118,7 @@ gulp.task('md2tex', ['dotex_pdf', 'autograph_pdf'], function () {
 gulp.task('md2pdf', ['dotex_pdf', 'autograph_pdf'], function () {
 	return gulp.src('data/*.md')
 		.pipe(mdinclude())
-		.pipe(mdproc.states())
+		.pipe(mdproc.badges())
 		.pipe(mdproc.references())
 		.pipe(mdproc.md2pdf())
 		.pipe(gulp.dest('tmp'));
