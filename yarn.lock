@@ -1149,9 +1149,9 @@ gulplog@^1.0.0:
   dependencies:
     glogg "^1.0.0"
 
-h5smpl@0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/h5smpl/-/h5smpl-0.2.9.tgz#f0f1a96d1196a8cfc3d4668dd7068ae82179ed5b"
+h5smpl@0.2.11:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/h5smpl/-/h5smpl-0.2.11.tgz#d7c11d57bf3976b064c4aff82a2b072742dc49b3"
 
 har-schema@^1.0.5:
   version "1.0.5"
