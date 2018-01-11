@@ -7,7 +7,7 @@ creator:
   name: Tobias Kiertscher
   email: dev@mastersign.de
 date: 21.08.2014
-lang: de
+lang: de-DE
 ...
 
 <!-- @graph ProductBacklog -->

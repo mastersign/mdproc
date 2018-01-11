@@ -16,7 +16,6 @@ var inliner = require('htinliner');
 
 var reload = require('./reload');
 var linkext = require('./linkext');
-var pdfLang = require('./pdflang');
 
 var inputFormat = [
 	'markdown',
@@ -214,15 +213,13 @@ module.exports.md2docx = buildFactory(
 module.exports.md2pdf = buildFactory(
 	'latex', 'pdf', 'pdf', latexTemplateFinder, 2, false, [
 		'--pdf-engine=xelatex',
-		'--variable=documentclass:scrartcl',
-		'--variable=pdflang:<%= file.pdfLang %>'
-	], [pdfLang]);
+		'--variable=documentclass:scrartcl'
+	], []);
 
 module.exports.md2tex = buildFactory(
 	'latex', 'tex', 'pdf', latexTemplateFinder, 2, false, [
-		'--variable=documentclass:scrartcl',
-		'--variable=pdflang:<%= file.pdfLang %>'
-	], [pdfLang]);
+		'--variable=documentclass:scrartcl'
+	], []);
 
 var extractGraphFactory = function (graphExtractMode) {
 	'use strict';
