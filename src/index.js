@@ -143,6 +143,21 @@ var buildFactory = function (targetFormat, targetExt,
 			'--default-image-extension=' + imgFormat
 		];
 
+		if (opt.citations) {
+			cmdline.push('--filter');
+			cmdline.push('pandoc-citeproc');
+			if (opt.bibliography && opt.bibliography.forEach) {
+				opt.bibliography.forEach(function (filePath) {
+					cmdline.push('--bibliography');
+					cmdline.push('"' + filePath + '"');
+				});
+			}
+			if (opt.citation_style) {
+				cmdline.push('--csl');
+				cmdline.push('"' + opt.citation_style + '"');
+			}
+		}
+
 		if (tocDepth) {
 			cmdline.push('--toc');
 			cmdline.push('--toc-depth=' + tocDepth);
