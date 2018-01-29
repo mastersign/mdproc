@@ -1948,9 +1948,9 @@ math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
 
-mdgraphextract@^0.1.17:
-  version "0.1.17"
-  resolved "https://registry.yarnpkg.com/mdgraphextract/-/mdgraphextract-0.1.17.tgz#c790fb7689a7a022b4162c1fe7fe839b639f4ed8"
+mdgraphextract@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/mdgraphextract/-/mdgraphextract-0.2.0.tgz#d1c46d674294cae62ff7d57cb77bf97e9e2eaf8f"
   dependencies:
     lodash "^4.0.0"
     mdheadline "^0.2.0"
