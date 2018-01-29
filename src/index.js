@@ -282,6 +282,14 @@ var extractGraphFactory = function (graphExtractMode) {
 		s = s.pipe(textTransform(makeImagePathsAbsoluteTransform));
 		s = s.pipe(ge, opt);
 
+		if (opt.gvOutputFile) {
+			var basename = path.basename(opt.gvOutputFile);
+			var dirname = path.dirname(opt.gvOutputFile);
+			s = s
+				.pipe(rename, basename)
+				.pipe(gulp.dest, dirname);
+		}
+
 		s = s
 			.pipe(spawn, {
 				cmd: 'dot',
