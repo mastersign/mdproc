@@ -33,7 +33,7 @@
     "gulp-exec": "^2.0.0",
     "gulp-jslint": "^1.0.0",
     "gulp-rename": "^1.2.0",
-    "gulp-spawn": "^0.3.0",
+    "gulp-spawn": "^0.4.0",
     "gulp-text-simple": "^0.4.1",
     "htinliner": "^0.3.1",
     "js-yaml": "^3.8.0",
