@@ -61,6 +61,11 @@ var runWithTempFiles = function (s, tmpDir, tmpExt, targetExt, commandLine) {
 		continueOnError: true,
 		pipeStdout: false
 	};
+	var reporterOptions = {
+		err: false,
+		stderr: true,
+		stdout: true
+	};
 	return s
 		// unify extension of input file
 		.pipe(rename, { extname: '.' + tmpExt })
@@ -70,7 +75,7 @@ var runWithTempFiles = function (s, tmpDir, tmpExt, targetExt, commandLine) {
 		.pipe(rename, { extname: '' })
 		// call command line
 		.pipe(exec, commandLine, execOptions)
-		.pipe(exec.reporter)
+		.pipe(exec.reporter, reporterOptions)
 		// add the target extension to the vinyl file to match the output
 		.pipe(rename, { extname: '.' + targetExt })
 		// load the content of the target file
@@ -209,6 +214,12 @@ var buildFactory = function (targetFormat, targetExt,
 		}
 
 		s = s();
+
+		s.on('error', function (e) {
+			console.log("ERROR while compiling document:");
+			console.log(e.message);
+		});
+
 		if (tmpDir && cleanupTmp) {
 			s.on('end', function () {
 				del.sync(tmpDir.name + '/*', { force: true });
@@ -313,6 +324,11 @@ var extractGraphFactory = function (graphExtractMode) {
 		}
 
 		s = s();
+
+		s.on('error', function (e) {
+			console.log("ERROR while compiling graph diagram:");
+			console.log(e.message);
+		});
 
 		if (tmpDir) {
 			s.on('end', function () {
