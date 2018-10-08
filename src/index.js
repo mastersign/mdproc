@@ -1,4 +1,4 @@
-/* global module, require, process */
+/* global module, require, process, console */
 
 var path = require('path');
 var url = require('url');
@@ -50,7 +50,6 @@ process.env.TEXINPUTS = texInputsPath + path.delimiter + (process.env.TEXINPUTS 
 
 var identity = function (x) {
 	'use strict';
-
 	return x;
 };
 
@@ -216,7 +215,7 @@ var buildFactory = function (targetFormat, targetExt,
 		s = s();
 
 		s.on('error', function (e) {
-			console.log("ERROR while compiling document:");
+			console.log('ERROR while compiling document:');
 			console.log(e.message);
 		});
 
@@ -326,7 +325,7 @@ var extractGraphFactory = function (graphExtractMode) {
 		s = s();
 
 		s.on('error', function (e) {
-			console.log("ERROR while compiling graph diagram:");
+			console.log('ERROR while compiling graph diagram:');
 			console.log(e.message);
 		});
 
