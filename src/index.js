@@ -3,6 +3,8 @@
 var path = require('path');
 var url = require('url');
 var gulp = require('gulp');
+var Vinyl = require('vinyl');
+var through2 = require('through2');
 var lazypipe = require('lazypipe');
 var spawn = require('gulp-spawn');
 var exec = require('gulp-exec');
@@ -51,6 +53,22 @@ process.env.TEXINPUTS = texInputsPath + path.delimiter + (process.env.TEXINPUTS 
 var identity = function (x) {
 	'use strict';
 	return x;
+};
+
+var noteDirname = function() {
+	'use strict';
+	return through2.obj(function (file, enc, cb){
+		var f = new Vinyl({
+			cwd: file.cwd,
+			base: file.base,
+			path: file.path,
+			contents: file.contents,
+			history: file.history,
+			originalDirname: path.dirname(file.path)
+		});
+		this.push(f);
+		cb();
+	});
 };
 
 var runWithTempFiles = function (s, tmpDir, tmpExt, targetExt, commandLine) {
@@ -138,12 +156,10 @@ var buildFactory = function (targetFormat, targetExt,
 		contextArgs = contextify(args);
 
 		cmdline = [
-			'cd',
-			'"<%= file.cwd %>"',
-			'&&',
 			'pandoc',
 			'--from=' + inputFormat.join('+'),
 			'--to=' + targetFormat,
+			'--resource-path="<%= file.originalDirname %>"',
 			'--default-image-extension=' + imgFormat
 		];
 
@@ -200,6 +216,7 @@ var buildFactory = function (targetFormat, targetExt,
 			s = s.pipe(textTransform(makeImagePathsAbsoluteTransform));
 		}
 
+		s = s.pipe(noteDirname);
 		s = runWithTempFiles(s, tmpDir.name, tmpExt, targetExt, cmdline.join(' '));
 
 		if (targetFormat === 'html5') {
