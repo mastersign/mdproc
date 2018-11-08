@@ -43,7 +43,7 @@ var html5TemplateFinder = function (theme) {
 var latexTemplateFinder = function () {
 	'use strict';
 	return path.join(path.dirname(module.filename),
-		'../assets/template.tex');
+		'..', 'assets', 'template.tex');
 };
 var texInputsPath = path.join(path.dirname(module.filename),
 	'../assets');
