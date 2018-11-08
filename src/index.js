@@ -40,6 +40,11 @@ var html5TemplateFinder = function (theme) {
 	return path.join(path.dirname(module.filename),
 		'..', 'assets', 'template.' + theme + '.html');
 };
+var docxTemplateFinder = function () {
+	'use strict';
+	return path.join(path.dirname(module.filename),
+		'..', 'assets', 'template.docx');
+};
 var latexTemplateFinder = function () {
 	'use strict';
 	return path.join(path.dirname(module.filename),
@@ -188,7 +193,11 @@ var buildFactory = function (targetFormat, targetExt,
 		}
 
 		if (templatePath) {
-			cmdline.push('--template="' + templatePath + '"');
+			if (targetFormat === 'docx') {
+				cmdline.push('--reference-doc="' + templatePath + '"');
+			} else {
+				cmdline.push('--template="' + templatePath + '"');
+			}
 		}
 		if (contextArgs) {
 			for (var i = 0; i < contextArgs.length; i++) {
@@ -250,7 +259,7 @@ module.exports.md2html = buildFactory(
 	'html5', 'html', 'svg', html5TemplateFinder, 2, true);
 
 module.exports.md2docx = buildFactory(
-	'docx', 'docx', 'png', null, 2, true);
+	'docx', 'docx', 'png', docxTemplateFinder, 2, true);
 
 module.exports.md2pdf = buildFactory(
 	'latex', 'pdf', 'pdf', latexTemplateFinder, 2, false, [
