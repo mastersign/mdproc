@@ -61,9 +61,14 @@ gulp.task('compile_mdproc_styles', function () {
         .pipe(gulp.dest(path.join(tempDir, 'css/')));
 });
 
-gulp.task('preparations', ['copy_template', 'compile_mdproc_styles', 'copy_h5smpl_styles']);
+var preparations = gulp.parallel(
+    'copy_template',
+    'compile_mdproc_styles',
+    'copy_h5smpl_styles'
+);
+gulp.task('preparations', preparations);
 
-gulp.task('build_html_template', ['preparations'], function () {
+gulp.task('build_html_template', function () {
     'use strict';
     return merge(findStyles().map(function (style) {
         var styleSetter = textTransformation(setTemplateStyle, { style: style });
@@ -77,4 +82,7 @@ gulp.task('build_html_template', ['preparations'], function () {
     }));
 });
 
-gulp.task('default', ['build_html_template']);
+gulp.task('default', gulp.series(
+    'preparations',
+    'build_html_template'
+));
