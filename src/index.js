@@ -277,6 +277,7 @@ var extractGraphFactory = function (graphExtractMode) {
 
 	return function (opt) {
 		var imgFormat; // the image format as file extension without the period
+		var imgResolution; // the raster image resolution in pixels per inch
 		var convertToPdf = false;
 		var convertToPng = false;
 		var imgName; // the image name
@@ -295,6 +296,7 @@ var extractGraphFactory = function (graphExtractMode) {
 			convertToPng = true;
 			imgFormat = 'svg';
 		}
+		imgResolution = opt.imgResolution || 300;
 
 		opt.mode = graphExtractMode || 'auto';
 		imgName = opt.imgName;
@@ -337,15 +339,16 @@ var extractGraphFactory = function (graphExtractMode) {
 				}
 			});
 
+		var convertCmd;
 		if (convertToPdf) {
+			convertCmd = 'inkscape -f "<%= file.path %>.svg" -A "<%= file.path %>.pdf"';
 			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
-			s = runWithTempFiles(s, tmpDir.name, 'svg', 'pdf',
-				'inkscape -f "<%= file.path %>.svg" -A "<%= file.path %>.pdf"');
+			s = runWithTempFiles(s, tmpDir.name, 'svg', 'pdf', convertCmd);
 		}
 		if (convertToPng) {
+			convertCmd = 'inkscape -f "<%= file.path %>.svg" -e "<%= file.path %>.png" -d ' + imgResolution;
 			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
-			s = runWithTempFiles(s, tmpDir.name, 'svg', 'png',
-				'inkscape -f "<%= file.path %>.svg" -e "<%= file.path %>.png" -d 300');
+			s = runWithTempFiles(s, tmpDir.name, 'svg', 'png', convertCmd);
 		}
 
 		s = s();
