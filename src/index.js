@@ -122,6 +122,7 @@ var buildFactory = function (targetFormat, targetExt,
 	'use strict';
 
 	return function (opt) {
+		var debug; // a switch for activating debug messages
 		var cmdline; // an array with all command line components
 		var imgFormat; // the image format as file extension without period
 		var theme; // the template theme
@@ -137,6 +138,7 @@ var buildFactory = function (targetFormat, targetExt,
 		var contextify; // function to resolve functional args into values
 
 		opt = opt || {};
+		debug = opt.debug || false;
 		imgFormat = opt.imgFormat || defImgFormat;
 		theme = opt.theme || 'default';
 		templatePath = opt.template;
@@ -225,6 +227,7 @@ var buildFactory = function (targetFormat, targetExt,
 			s = s.pipe(textTransform(makeImagePathsAbsoluteTransform));
 		}
 
+		if (debug) { console.log('DEBUG: ' + cmdline.join(' ')); }
 		s = s.pipe(noteDirname);
 		s = runWithTempFiles(s, tmpDir.name, tmpExt, targetExt, cmdline.join(' '));
 
@@ -276,6 +279,7 @@ var extractGraphFactory = function (graphExtractMode) {
 	'use strict';
 
 	return function (opt) {
+		var debug; // a switch to activate debug messages
 		var imgFormat; // the image format as file extension without the period
 		var imgResolution; // the raster image resolution in pixels per inch
 		var convertToPdf = false;
@@ -287,6 +291,7 @@ var extractGraphFactory = function (graphExtractMode) {
 		var args = []; // the commandline arguments
 
 		opt = opt || {};
+		debug = opt.debug || false;
 		imgFormat = (opt.imgFormat || 'svg').toLowerCase();
 		if (imgFormat === 'pdf') {
 			convertToPdf = true;
@@ -328,6 +333,7 @@ var extractGraphFactory = function (graphExtractMode) {
 				.pipe(gulp.dest, dirname);
 		}
 
+		if (debug) { console.log('DEBUG: dot ' + args); }
 		s = s
 			.pipe(spawn, {
 				cmd: 'dot',
@@ -342,11 +348,13 @@ var extractGraphFactory = function (graphExtractMode) {
 		var convertCmd;
 		if (convertToPdf) {
 			convertCmd = 'inkscape -f "<%= file.path %>.svg" -A "<%= file.path %>.pdf"';
+			if (debug) { console.log('DEBUG: ' + convertCmd); }
 			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
 			s = runWithTempFiles(s, tmpDir.name, 'svg', 'pdf', convertCmd);
 		}
 		if (convertToPng) {
 			convertCmd = 'inkscape -f "<%= file.path %>.svg" -e "<%= file.path %>.png" -d ' + imgResolution;
+			if (debug) { console.log('DEBUG: ' + convertCmd); }
 			tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
 			s = runWithTempFiles(s, tmpDir.name, 'svg', 'png', convertCmd);
 		}
