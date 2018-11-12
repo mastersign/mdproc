@@ -206,7 +206,7 @@ var buildFactory = function (targetFormat, targetExt,
 		}
 
 		for (var key in variables) {
-			cmdline.push('"--variable=' + key + ':' + variables[key] + '"');
+			cmdline.push('--variable="' + key + ':' + variables[key] + '"');
 		}
 
 		cmdline.push('-o');
