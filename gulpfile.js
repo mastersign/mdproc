@@ -13,7 +13,8 @@ var htinliner = require('htinliner');
 
 var h5smplDir = './node_modules/h5smpl/';
 var tempDir = './tmp/';
-var styleSourcePattern = path.join(h5smplDir, 'dist', 'css', 'style.*.mini.css');
+var h5styleDir = path.join(h5smplDir, 'dist', 'css');
+var styleSourcePattern = path.join(h5styleDir, 'style.*.mini.css');
 
 var extractStyleFromFilename = function (fileName) {
     'use strict';
@@ -49,7 +50,7 @@ gulp.task('copy_template', function () {
 
 gulp.task('copy_h5smpl_styles', function () {
     'use strict';
-    return gulp.src(styleSourcePattern)
+    return gulp.src(styleSourcePattern, {base: h5styleDir})
         .pipe(gulp.dest(path.join(tempDir, 'css/')));
 });
 
