@@ -1486,14 +1486,14 @@ gulp-spawn@^0.4.0:
     plexer "^1.0.2"
     plugin-error "^1.0.1"
 
-gulp-text-simple@^0.4.0, gulp-text-simple@^0.4.1:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/gulp-text-simple/-/gulp-text-simple-0.4.4.tgz#0ac7820fb687fd999387aa77baafec0a614e34d3"
-  integrity sha512-LG/ZmdloodRFUS6sSClzLNZ1PDldNPS1UZSjwgr2QibM/JRlQWMf2uacXeylCzamfpsrwx01cb24I3y/TVwOnA==
+gulp-text-simple@^0.5.0, gulp-text-simple@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/gulp-text-simple/-/gulp-text-simple-0.5.2.tgz#31058be73b0248bbe787ab3414be4102ba673947"
+  integrity sha512-pmJZYlj+5ueQO6UjoIvi1/nyncb4pJT4qbwBHBSzUFnAedxDAPz4Puq+kMCLyemai0o9OSG927DoiGgPUTQfjA==
   dependencies:
-    lodash "^4.17.11"
-    readable-stream "^2.3.6"
-    through2 "^2.0.0"
+    lodash "^4.0.0"
+    readable-stream "^3.0.0"
+    through2 "^3.0.0"
 
 gulp@^4.0.0:
   version "4.0.0"
@@ -1602,13 +1602,13 @@ hosted-git-info@^2.1.4:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
   integrity sha512-7T/BxH19zbcCTa8XkMlbK5lTo1WtgkFi3GvdWEyNuc4Vex7/9Dqbnpsf4JMydcfj9HCg4zUWFTL3Za6lapg5/w==
 
-htinliner@^0.3.1:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/htinliner/-/htinliner-0.3.2.tgz#95da327ecb1c954da91f0ae7d74a85b26fc93c2e"
-  integrity sha1-ldoyfssclU2pHwrn10qFsm/JPC4=
+htinliner@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/htinliner/-/htinliner-0.4.0.tgz#d74cd9a2d105e621f9a4f011aa1860d4eb128187"
+  integrity sha512-L8RugLBtTjWv/WoUNFFAtAoIw9lUCL01kDOo2fkluYeVH0TnNtA6uldDC8UNuPEVs8WQKHmq5WFXxOl0WTgYdg==
   dependencies:
     cheerio "^0.22.0"
-    gulp-text-simple "^0.4.0"
+    gulp-text-simple "^0.5.2"
 
 html-comment-regex@^1.1.0:
   version "1.1.2"
@@ -2263,30 +2263,30 @@ math-expression-evaluator@^1.2.14:
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
   integrity sha1-3oGf282E3M2PrlnGrreWFbnSZqw=
 
-mdgraphextract@^0.2.0:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/mdgraphextract/-/mdgraphextract-0.2.5.tgz#b1bc7de433da030f49dedc9b6dc723a0eace3ab2"
-  integrity sha512-Qsh8cK0bp0nH0Wio9KxRXdTw/jn+Q/AEz8sCY1fOozkgyycffUf3AccTuxWh/hgKoW2k5kpxQH29W4l1P/T+CA==
-  dependencies:
-    lodash "^4.0.0"
-    mdheadline "^0.3.0"
-    split-stream "^0.2.0"
-    through2 "^2.0.0"
-
-mdheadline@^0.3.0:
+mdgraphextract@^0.3.0:
   version "0.3.0"
-  resolved "https://registry.yarnpkg.com/mdheadline/-/mdheadline-0.3.0.tgz#ed915df3f36bfc22d12daed96d1e4e17745a5771"
-  integrity sha1-7ZFd8/Nr/CLRLa7ZbR5OF3RaV3E=
+  resolved "https://registry.yarnpkg.com/mdgraphextract/-/mdgraphextract-0.3.0.tgz#4da563c20cad559146c58076e10bdee4e4a2b6e3"
+  integrity sha512-nPSDJSgkm0AWJbcpPeL/u0qHRXScQddy3Il6bNxOxSXmQxu8GmjBU32x+uQBxYVYy767uKFqvskS+jK7517nsw==
+  dependencies:
+    lodash "^4.17.11"
+    mdheadline "^0.3.1"
+    split-stream "^0.2.0"
+    through2 "^3.0.0"
+
+mdheadline@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/mdheadline/-/mdheadline-0.3.1.tgz#3a9634cb369cd4237d0b614180325eab667f4170"
+  integrity sha512-/dauugfSFQ4rbmbUU6w063fNA/SGKbI2rrhcBmgOhu/hy/weLYH0mSLcekNYz1OcohH47E43MdVjYBYv1mZA4g==
   dependencies:
     xregexp "^4.0.0"
 
-mdinclude@^0.6.0:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/mdinclude/-/mdinclude-0.6.1.tgz#c647e807a8590695568bfe6ebcae0975a9bdcd94"
-  integrity sha1-xkfoB6hZBpVWi/5uvK4Jdam9zZQ=
+mdinclude@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/mdinclude/-/mdinclude-0.7.0.tgz#5dc23329b10982746f99a76595ee78c0518329b3"
+  integrity sha512-TP1HhtZ02nufBu+sMHyzYoZTOg8lmensjYmePCAb8j9hgtVcCM3eHvt/Wcz+fMLcvVaZLOJF3Ub9IRAFYXYTTw==
   dependencies:
     glob "^7.1.2"
-    gulp-text-simple "^0.4.0"
+    gulp-text-simple "^0.5.0"
     lodash "^4.17.0"
 
 merge-stream@^1.0.0:
@@ -3125,7 +3125,16 @@ read-pkg@^1.0.0:
     normalize-package-data "^2.3.2"
     path-type "^1.0.0"
 
-readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.5, readable-stream@^2.3.6, readable-stream@~2.3.6:
+"readable-stream@2 || 3", readable-stream@^3.0.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.1.1.tgz#ed6bbc6c5ba58b090039ff18ce670515795aeb06"
+  integrity sha512-DkN66hPyqDhnIQ6Jcsvx9bFjhw214O4poMBcIMgPVpQvNy9a0e0Uhg5SqySyDKAmUlwt8LonTBz1ezOnM8pUdA==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
+
+readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.5, readable-stream@~2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   integrity sha512-tQtKA9WIAhBF3+VLAseyMqZeBjW0AHJoxOtYqSUZNJxauErmLbVm2FW1y+J/YA9dUrAC39ITejlZWhVIwawkKw==
@@ -3658,6 +3667,14 @@ through2@^2.0.0, through2@^2.0.3, through2@~2.0.0:
   integrity sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==
   dependencies:
     readable-stream "~2.3.6"
+    xtend "~4.0.1"
+
+through2@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/through2/-/through2-3.0.0.tgz#468b461df9cd9fcc170f22ebf6852e467e578ff2"
+  integrity sha512-8B+sevlqP4OiCjonI1Zw03Sf8PuV1eRsYQgLad5eonILOdyeRsY27A/2Ze8IlvlMvq31OH+3fz/styI7Ya62yQ==
+  dependencies:
+    readable-stream "2 || 3"
     xtend "~4.0.1"
 
 through@~2.3.4:
