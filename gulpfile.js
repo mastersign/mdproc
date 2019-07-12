@@ -6,7 +6,7 @@ var glob = require('glob');
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
-var cssNano = require('gulp-cssnano');
+var cleanCss = require('gulp-clean-css');
 var less = require('gulp-less');
 var textTransformation = require('gulp-text-simple');
 var htinliner = require('htinliner');
@@ -58,7 +58,7 @@ gulp.task('compile_mdproc_styles', function () {
     'use strict';
     return gulp.src('./src/*.less')
         .pipe(less())
-        .pipe(cssNano())
+        .pipe(cleanCss())
         .pipe(gulp.dest(path.join(tempDir, 'css/')));
 });
 
