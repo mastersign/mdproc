@@ -42,12 +42,15 @@ gulp.task('copy-images', function () {
 		.pipe(gulp.dest('tmp/images'));
 });
 
-gulp.task('complex', ['autograph:complex', 'copy-images'], function () {
-	return gulp.src('data/complex.md')
-		.pipe(mdinclude())
-		.pipe(mdproc.md2html())
-		.pipe(gulp.dest('tmp'));
-});
+gulp.task('complex', gulp.series(
+	gulp.parallel(['autograph:complex', 'copy-images']),
+	function () {
+		return gulp.src('data/complex.md')
+			.pipe(mdinclude())
+			.pipe(mdproc.md2html())
+			.pipe(gulp.dest('tmp'));
+	}
+));
 
 gulp.task('dotex_svg',  function () {
 	return gulp.src('data/*.md')
@@ -88,40 +91,52 @@ gulp.task('autograph_pdf', function () {
 		.pipe(gulp.dest('data/images/auto'));
 });
 
-gulp.task('md2html', ['dotex_svg', 'autograph_svg', 'copy-images'], function () {
-	return gulp.src('data/*.md')
-		.pipe(mdinclude())
-		.pipe(mdproc.badges())
-		.pipe(mdproc.references({ prefixCaption: true }))
-		.pipe(mdproc.md2html({ basePath: 'data', theme: 'metro' }))
-		.pipe(gulp.dest('tmp'));
-});
+gulp.task('md2html', gulp.series(
+	gulp.parallel(['dotex_svg', 'autograph_svg', 'copy-images']),
+	function () {
+		return gulp.src('data/*.md')
+			.pipe(mdinclude())
+			.pipe(mdproc.badges())
+			.pipe(mdproc.references({ prefixCaption: true }))
+			.pipe(mdproc.md2html({ basePath: 'data', theme: 'metro' }))
+			.pipe(gulp.dest('tmp'));
+	}
+));
 
-gulp.task('md2docx', ['dotex_png', 'autograph_png'], function () {
-	return gulp.src('data/*.md')
-		.pipe(mdinclude())
-		.pipe(mdproc.badges())
-		.pipe(mdproc.references())
-		.pipe(mdproc.md2docx())
-		.pipe(gulp.dest('tmp'));
-});
+gulp.task('md2docx', gulp.series(
+	gulp.parallel(['dotex_png', 'autograph_png']),
+	function () {
+		return gulp.src('data/*.md')
+			.pipe(mdinclude())
+			.pipe(mdproc.badges())
+			.pipe(mdproc.references())
+			.pipe(mdproc.md2docx())
+			.pipe(gulp.dest('tmp'));
+	}
+));
 
-gulp.task('md2tex', ['dotex_pdf', 'autograph_pdf'], function () {
-	return gulp.src('data/*.md')
-		.pipe(mdinclude())
-		.pipe(mdproc.badges())
-		.pipe(mdproc.references())
-		.pipe(mdproc.md2tex())
-		.pipe(gulp.dest('tmp'));
-});
+gulp.task('md2tex', gulp.series(
+	gulp.parallel(['dotex_pdf', 'autograph_pdf']),
+	function () {
+		return gulp.src('data/*.md')
+			.pipe(mdinclude())
+			.pipe(mdproc.badges())
+			.pipe(mdproc.references())
+			.pipe(mdproc.md2tex())
+			.pipe(gulp.dest('tmp'));
+	}
+));
 
-gulp.task('md2pdf', ['dotex_pdf', 'autograph_pdf'], function () {
-	return gulp.src('data/*.md')
-		.pipe(mdinclude())
-		.pipe(mdproc.badges())
-		.pipe(mdproc.references())
-		.pipe(mdproc.md2pdf())
-		.pipe(gulp.dest('tmp'));
-});
+gulp.task('md2pdf', gulp.series(
+	gulp.parallel(['dotex_pdf', 'autograph_pdf']),
+	function () {
+		return gulp.src('data/*.md')
+			.pipe(mdinclude())
+			.pipe(mdproc.badges())
+			.pipe(mdproc.references())
+			.pipe(mdproc.md2pdf())
+			.pipe(gulp.dest('tmp'));
+	}
+));
 
-gulp.task('default', ['md2html', 'md2docx', 'md2pdf']);
+gulp.task('default', gulp.series(['md2html', 'md2docx', 'md2pdf']));
