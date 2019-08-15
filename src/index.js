@@ -131,6 +131,7 @@ var buildFactory = function (targetFormat, targetExt,
 		                      // for adaptation of hyperlinks to other Markdown documents
 		var tocDepth; // the depth for the table of contents
 		var variables; // an object with additional template variables
+		var noSvgInline; // a switch to prevent SVG images from beeing inlined
 		var tmpDir; // the directory for temporary files
 		var tmpExt; // the file name extension for intermediate files
 		var cleanupTmp; // switch to prevent the cleanup of temporary files
@@ -150,6 +151,7 @@ var buildFactory = function (targetFormat, targetExt,
 		tocDepth = opt.tocDepth !== undefined ?
 			opt.tocDepth : defTocDepth;
 		variables = opt.vars || {};
+		noSvgInline = opt.noSvgInline || false;
 		tmpDir = tmp.dirSync({ prefix: 'mdproc_' });
 		tmpExt = targetExt + '_tmp';
 		cleanupTmp = opt.cleanupTempFiles !== false;
@@ -234,6 +236,7 @@ var buildFactory = function (targetFormat, targetExt,
 		if (targetFormat === 'html5') {
 			s = s
 				.pipe(inliner, {
+					inlineSvgImages: !noSvgInline,
 					svgRemoveSize: true,
 					svgLimitSize: true,
 					svgWrapElement: 'div',
