@@ -34,8 +34,13 @@ var setTemplateStyle = function (html, opts) {
 
 var insertLangAttribute = function (html) {
     'use strict';
-    return html.replace('<html>', '<html$if(lang)$ lang="$lang$"$endif$>');
+    return html.replace('<html>', '<html$$if(lang)$$ lang="$$lang$$"$$endif$$>');
 };
+
+var insertNoFrameClass = function (html) {
+    'use strict';
+    return html.replace('<div id="frame">', '<div id="frame"$$if(toc)$$$$else$$ class="no-toc"$$endif$$>');
+}
 
 gulp.task('clean', function () {
     'use strict';
@@ -74,10 +79,12 @@ gulp.task('build_html_template', function () {
     return merge(findStyles().map(function (style) {
         var styleSetter = textTransformation(setTemplateStyle, { style: style });
         var langInserter = textTransformation(insertLangAttribute);
+        var noFrameInserter = textTransformation(insertNoFrameClass);
         return gulp.src('template.html', { cwd: tempDir })
             .pipe(styleSetter())
             .pipe(htinliner())
             .pipe(langInserter())
+            .pipe(noFrameInserter())
             .pipe(rename('template.' + style + '.html'))
             .pipe(gulp.dest('assets/'));
     }));
