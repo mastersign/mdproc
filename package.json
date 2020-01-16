@@ -1,6 +1,6 @@
 {
   "name": "mdproc",
-  "version": "0.4.14",
+  "version": "0.4.15",
   "description": "Extended Markdown processing based on pandoc, graphviz and others.",
   "readme": "README.md",
   "keywords": [
