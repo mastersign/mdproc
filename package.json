@@ -29,26 +29,26 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "del": "^2.0.0",
-    "gulp-exec": "^3.0.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-spawn": "^0.4.0",
-    "gulp-text-simple": "^0.5.2",
-    "htinliner": "^0.4.0",
-    "js-yaml": "^3.8.0",
-    "lazypipe": "^1.0.0",
-    "lodash": "^4.17.0",
-    "mdgraphextract": "^0.3.0",
-    "merge-stream": "^1.0.0",
-    "through2": "^2.0.0",
-    "tmp": "0.0.31"
+    "del": "^6.0.0",
+    "gulp-exec": "^3.0.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-spawn": "^0.4.5",
+    "gulp-text-simple": "^0.5.5",
+    "htinliner": "^0.4.1",
+    "js-yaml": "^4.1.0",
+    "lazypipe": "^1.0.2",
+    "lodash": "^4.17.21",
+    "mdgraphextract": "^0.3.1",
+    "merge-stream": "^2.0.0",
+    "through2": "^4.0.2",
+    "tmp": "^0.2.1"
   },
   "devDependencies": {
-    "glob": "^7.0.4",
-    "gulp": "^4.0.0",
-    "gulp-clean-css": "^4.2.0",
-    "gulp-less": "^4.0.0",
-    "h5smpl": "0.2.12",
-    "mdinclude": "^0.7.0"
+    "glob": "^7.1.7",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-less": "^4.0.1",
+    "h5smpl": "0.2.13",
+    "mdinclude": "^0.7.2"
   }
 }
